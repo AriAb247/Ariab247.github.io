@@ -1,5 +1,5 @@
-fetch('Allocations_sheet.csv')
+fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
   .then(response => response.text())
   .then(data => {
-    console.log(data); // This will log the CSV data to the console
+    // Process the CSV data here
   });
