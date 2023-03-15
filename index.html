@@ -216,16 +216,58 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       for (let i = 0; i < locations.length; i++) {
         const location = locations[i];
         const locationDropdown = document.querySelector(`[data-location="${location}"]`);
-        const score = locationScores[location]const score = locationScores[location] || 0;
+        const score = locationScores[location] || 0;
         locationDropdown.value = score;
       }
     }
+
+    // Group rows by program title and add them to the allocation table
+    const groupedData = data.reduce((acc, row) => {
+      if (!acc[row.programmeTitle]) {
+        acc[row.programmeTitle] = [];
+      }
+      acc[row.programmeTitle].push(row);
+      return acc;
+    }, {});
+
+    const table = document.getElementById('allocation-table');
+    let tableHTML = `
+      <thead>
+        <tr>
+          <th>Programme Title</th>
+          <th>Speciality</th>
+          <th>Location</th>
+          <th>Placement Order</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+
+    for (const programmeTitle in groupedData) {
+      const rows = groupedData[programmeTitle];
+      rows.sort((a, b) => parseInt(a.placementOrder) - parseInt(b.placementOrder));
+
+      rows.forEach((row, index) => {
+        tableHTML += `
+          <tr>
+            ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+            <td>${row.speciality}</td>
+            <td>${row.location}</td>
+            <td>${row.placementOrder}</td>
+          </tr>
+        `;
+      });
+    }
+
+    tableHTML += '</tbody>';
+    table.innerHTML = tableHTML;
 
     // Initialize the UI
     updateScores();
     updateLocationScores();
   });
-
+        
+        
 
 </script>
 </body>
