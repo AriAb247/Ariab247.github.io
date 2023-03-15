@@ -275,10 +275,12 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
 
 function updateTotalScores() {
   const tableBody = table.getElementsByTagName('tbody')[0];
-  const rows = tableBody.getElementsByTagName('tr');
+  const rows = Array.from(tableBody.getElementsByTagName('tr'));
 
-  for (const programmeTitle in groupedData) {
+  const updatedRows = rows.map(tableRow => {
+    const programmeTitle = tableRow.cells[0].textContent;
     const programmeRows = groupedData[programmeTitle];
+
     let totalScore = 0;
 
     for (let i = 0; i < programmeRows.length; i++) {
@@ -295,24 +297,24 @@ function updateTotalScores() {
 
       totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
     }
-   
 
-    for (let i = 0; i < rows.length; i++) {
-      const tableRow = rows[i];
-      const programmeCell = tableRow.cells[0];
-
-      if (programmeCell.textContent === programmeTitle) {
-        if (tableRow.cells.length === 5) { // Check if the row has a total score cell
-          tableRow.cells[4].textContent = totalScore;
-        } else {
-          const totalScoreCell = document.createElement('td');
-          totalScoreCell.textContent = totalScore;
-          tableRow.appendChild(totalScoreCell);
-        }
-        break;
-      }
+    if (tableRow.cells.length === 5) {
+      tableRow.cells[4].textContent = totalScore;
+    } else {
+      const totalScoreCell = document.createElement('td');
+      totalScoreCell.textContent = totalScore;
+      tableRow.appendChild(totalScoreCell);
     }
-  }
+
+    return { tableRow, totalScore };
+  });
+
+  // Sort rows by total score in descending order
+  updatedRows.sort((a, b) => b.totalScore - a.totalScore);
+
+  // Clear the table body and append the sorted rows
+  tableBody.innerHTML = '';
+  updatedRows.forEach(({ tableRow }) => tableBody.appendChild(tableRow));
 }
 
 function reorderTableRows() {
