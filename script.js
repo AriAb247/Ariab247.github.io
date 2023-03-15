@@ -5,9 +5,29 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
 
     // Sort by programmeTitle and placementOrder
    data.sort((a, b) => {
-  if (a['programmeTitle'] < b['programmeTitle']) return -1;
-  if (a['programmeTitle'] > b['programmeTitle']) return 1;
-  return 0;
+  const aTitle = a['programmeTitle'];
+  const bTitle = b['programmeTitle'];
+
+  // Extract the numeric part of the title, if any
+  const aNum = parseInt(aTitle.match(/\d+/));
+  const bNum = parseInt(bTitle.match(/\d+/));
+
+  // Compare the alphabetic part of the title first
+  const alphaComparison = aTitle.replace(/\d+/, '').localeCompare(bTitle.replace(/\d+/, ''));
+  if (alphaComparison !== 0) {
+    return alphaComparison;
+  }
+
+  // If the alphabetic part of the title is the same, compare the numeric part
+  if (aNum && bNum) {
+    return aNum - bNum;
+  } else if (aNum) {
+    return -1;
+  } else if (bNum) {
+    return 1;
+  } else {
+    return 0;
+  }
 });
 
     // Group data by programmeTitle
