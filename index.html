@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Allocations</title>
+  <script src="https://cdn.jsdelivr.net/npm/@mithril/core@2.0.4/mithril.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -136,16 +137,14 @@ h1, h2 {
     </table>
   </div>
   <script>
-    fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
+   fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
   .then(response => response.text())
   .then(csv => {
     const data = Papa.parse(csv, { header: true }).data;
-      
-    // Create an array of unique specialities, sort alphabetically
-    const specialities = [...new Set(data.map(d => d.speciality))].sort();
 
-    // Add score drop-downs to the DOM
+    const specialities = [...new Set(data.map(d => d.speciality))].sort();
     const scoreContainer = document.getElementById('score');
+
     for (let i = 0; i < specialities.length; i++) {
       const speciality = specialities[i];
       const scoreEl = document.createElement('div');
@@ -153,12 +152,9 @@ h1, h2 {
       const scoreDropdown = document.createElement('select');
       scoreDropdown.setAttribute('data-speciality', speciality);
       scoreDropdown.addEventListener('change', () => {
-        // Store the score in local storage
         const scores = JSON.parse(localStorage.getItem('scores')) || {};
         scores[speciality] = scoreDropdown.value;
         localStorage.setItem('scores', JSON.stringify(scores));
-
-        // Update the UI
         updateScores();
       });
       for (let j = -10; j <= 10; j++) {
@@ -171,25 +167,19 @@ h1, h2 {
       scoreContainer.appendChild(scoreEl);
     }
 
-    // Create an array of unique locations, sort alphabetically
     const locations = [...new Set(data.map(d => d.location))].sort();
-
-    // Add location score drop-downs to the DOM
     const locationScoreContainer = document.getElementById('location-score');
+
     for (let i = 0; i < locations.length; i++) {
       const location = locations[i];
       const locationScoreEl = document.createElement('div');
       locationScoreEl.innerHTML = `${location}: `;
       const locationScoreDropdown = document.createElement('select');
       locationScoreDropdown.setAttribute('data-location', location);
-       locationScoreDropdown.addEventListener('change', () => {
-        
-         // Store the location score in local storage
+      locationScoreDropdown.addEventListener('change', () => {
         const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
         locationScores[location] = locationScoreDropdown.value;
         localStorage.setItem('locationScores', JSON.stringify(locationScores));
-
-        // Update the UI
         updateLocationScores();
       });
       for (let j = -10; j <= 10; j++) {
@@ -202,7 +192,6 @@ h1, h2 {
       locationScoreContainer.appendChild(locationScoreEl);
     }
 
-    // Retrieve scores from local storage and update the UI
     function updateScores() {
       const scores = JSON.parse(localStorage.getItem('scores')) || {};
       for (let i = 0; i < specialities.length; i++) {
@@ -213,67 +202,71 @@ h1, h2 {
       }
     }
 
-    // Retrieve location scores from local storage and update the UI
     function updateLocationScores() {
-      const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
-      for (let i = 0; i < locations.length; i++) {
-        const location = locations[i];
-        const locationDropdown = document.querySelector(`[data-location="${location}"]`);
-        const score = locationScores[location] || 0;
-        locationDropdown.value = score;
-      }
-    }
+  const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+  for (let i = 0; i < locations.length; i++) {
+    const location = locations[i];
+    const locationDropdown = document.querySelector(`[data-location="${location}"]`);
+    const score = locationScores[location] || 0;
+    locationDropdown.value = score;
+  }
+}
 
-    // Hide the table
-    const table = document.getElementById('allocation-table');
-    table.style.display = 'none';
+const table = document.getElementById('allocation-table');
+table.style.display = 'none';
 
-    // Initialize the UI
-    updateScores();
-    updateLocationScores();
-      
-      // Create an array to store the allocations
-  const allocations = data.map(d => ({
-    speciality: d.speciality,
-    location: d.location,
-    title: d.title,
-    score: 0
-  }));
+// Initialize the UI
+updateScores();
+updateLocationScores();
 
-  // Add a click event listener to the button
-  document.getElementById('calculate-button').addEventListener('click', () => {
-    // Calculate the score for each allocation
-    allocations.forEach(allocation => {
-      const specialityScore = parseInt(JSON.parse(localStorage.getItem('scores'))[allocation.speciality] || '0');
-      const locationScore = parseInt(JSON.parse(localStorage.getItem('locationScores'))[allocation.location] || '0');
-      allocation.score = specialityScore + locationScore;
-    });
+// Create an array to store the allocations
+const allocations = data.map(d => ({
+  speciality: d.speciality,
+  location: d.location,
+  title: d.title,
+  score: 0
+}));
 
-    // Sort the allocations based on their scores
-    allocations.sort((a, b) => b.score - a.score);
-
-    // Clear the table and add sorted allocations
-    const table = document.getElementById('allocation-table');
-    table.innerHTML = '';
-    const headerRow = document.createElement('tr');
-    headerRow.innerHTML = `
-      <th>Title</th>
-      <th>Score</th>
-    `;
-    table.appendChild(headerRow);
-
-    allocations.forEach(allocation => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${allocation.title}</td>
-        <td>${allocation.score}</td>
-      `;
-      table.appendChild(row);
-    });
-
-    // Display the table
-    table.style.display = 'table';
+// Add a click event listener to the button
+document.getElementById('calculate-button').addEventListener('click', () => {
+  // Calculate the score for each allocation
+  allocations.forEach(allocation => {
+    const specialityScore = parseInt(JSON.parse(localStorage.getItem('scores'))[allocation.speciality] || '0');
+    const locationScore = parseInt(JSON.parse(localStorage.getItem('locationScores'))[allocation.location] || '0');
+    allocation.score = specialityScore + locationScore;
   });
+
+  // Sort the allocations based on their scores
+  allocations.sort((a, b) => b.score - a.score);
+
+  // Clear the table and add sorted allocations
+  const table = document.getElementById('allocation-table');
+  table.innerHTML = '';
+  const headerRow = document.createElement('tr');
+  headerRow.innerHTML = `
+    <th>Title</th>
+    <th>Score</th>
+  `;
+  table.appendChild(headerRow);
+
+  allocations.forEach(allocation => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${allocation.title}</td>
+      <td>${allocation.score}</td>
+    `;
+    table.appendChild(row);
+  });
+
+  // Display the table
+  table.style.display = 'table';
+});
+
+      });
+    });
+  });
+
+
  </script>
 </body>
 </html>
