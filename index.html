@@ -99,33 +99,6 @@
   locationScoreContainer.appendChild(locationScoreEl);
 }
                                                                
-    // Add location drop-downs to the DOM
-    const locationContainer = document.createElement('div');
-    locationContainer.id = 'location-container';
-    scoreContainer.insertAdjacentElement('afterend', locationContainer);
-    
-    const locations = [...new Set(data.map(d => d.location))];
-    for (let i = 0; i < locations.length; i++) {
-      const location = locations[i];
-      const locationEl = document.createElement('div');
-      locationEl.innerHTML = `${location}: `;
-      const locationDropdown = document.createElement('select');
-      locationDropdown.setAttribute('data-location', location);
-      locationDropdown.addEventListener('change', () => {
-        // Store the score in local storage
-        const scores = JSON.parse(localStorage.getItem('scores')) || {};
-        scores[location] = locationDropdown.value;
-        localStorage.setItem('scores', JSON.stringify(scores));
-      });
-      for (let j = -10; j <= 10; j++) {
-        const option = document.createElement('option');
-        option.value = j;
-        option.text = j;
-        locationDropdown.appendChild(option);
-      }
-      locationEl.appendChild(locationDropdown);
-      locationContainer.appendChild(locationEl);
-    }
 
     // Retrieve scores from local storage and update the UI
     function updateScores() {
