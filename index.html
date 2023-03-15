@@ -243,102 +243,97 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
         locationDropdown.value = score;
       }
     }
-  document.getElementById('update-button').addEventListener('click', () => {
-  updateTotalScores();
-});
 
-// Group rows by program title and add them to the allocation table
-const groupedData = data.reduce((acc, row) => {
-  if (!acc[row.programmeTitle]) {
-    acc[row.programmeTitle] = [];
-  }
-  acc[row.programmeTitle].push(row);
-  return acc;
-}, {});
+    document.getElementById('update-button').addEventListener('click', () => {
+      updateTotalScores();
+    });
 
-const table = document.getElementById('allocation-table');
-let tableHTML = `
-  <thead>
-    <tr>
-      <th>Programme Title</th>
-      <th>Speciality</th>
-      <th>Location</th>
-      <th>Placement Order</th>
-      <th>Total Score</th>
-    </tr>
-  </thead>
-  <tbody>
-`;
+    // Group rows by program title and add them to the allocation table
+    const groupedData = data.reduce((acc, row) => {
+      if (!acc[row.programmeTitle]) {
+        acc[row.programmeTitle] = [];
+      }
+      acc[row.programmeTitle].push(row);
+      return acc;
+    }, {});
 
-function updateTotalScores() {
-  const tableBody = table.getElementsByTagName('tbody')[0];
-  const rows = tableBody.getElementsByTagName('tr');
+    const table = document.getElementById('allocation-table');
 
-  for (const programmeTitle in groupedData) {
-    const programmeRows = groupedData[programmeTitle];
-    let totalScore = 0;
+    function generateTableHTML(groupedData) {
+      let tableHTML = `
+        <thead>
+          <tr>
+            <th>Programme Title</th>
+            <th>Speciality</th>
+            <th>Location</th>
+            <th>Placement Order</th>
+            <th>Total Score</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
 
-    for (let i = 0; i < programmeRows.length; i++) {
-      const row = programmeRows[i];
-      const speciality = row.speciality;
-      const location = row.location;
+      for (const programmeTitle in groupedData) {
+        const rows = groupedData[programmeTitle];
+        rows.forEach((row, index) => {
+          tableHTML += `
+            <tr>
+              ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+              <td>${row.speciality}</td>
+              <td>${row.location}</td>
+              <td>${row.placementOrder}</td>
+              ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
+            </tr>
+          `;
+        });
+      }
 
+      tableHTML += '</tbody>';
+      return tableHTML;
+    }
+
+    function updateTotalScores() {
       const scores = JSON.parse(localStorage.getItem('scores')) || {};
       const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
-      const specialityScore = parseInt(scores[speciality]) || 0;
-      const locationScore = parseInt(locationScores[location]) || 0;
       const specialityWeight = parseFloat(document.getElementById('speciality-weight').value) || 0;
       const locationWeight = parseFloat(document.getElementById('location-weight').value) || 0;
 
-      totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
-    }
-   
+      for (const programmeTitle in groupedData) {
+        const programmeRows = groupedData[programmeTitle];
+        let totalScore = 0;
 
-    for (let i = 0; i < rows.length; i++) {
-      const tableRow = rows[i];
-      const programmeCell = tableRow.cells[0];
+        for (let i = 0; i < programmeRows.length; i++) {
+          const row = programmeRows[i];
+          const speciality = row.speciality;
+          const location = row.location;
+          const specialityScore = parseInt(scores[speciality]) || 0;
+          const locationScore = parseInt(locationScores[location]) || 0;
 
-      if (programmeCell.textContent === programmeTitle) {
-        if (tableRow.cells.length === 5) { // Check if the row has a total score cell
-          tableRow.cells[4].textContent = totalScore;
-        } else {
-          const totalScoreCell = document.createElement('td');
-          totalScoreCell.textContent = totalScore;
-          tableRow.appendChild(totalScoreCell);
+          totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
         }
-        break;
+
+        for (const row of programmeRows) {
+          row.totalScore = totalScore;
+        }
       }
+
+      const sortedGroupedData = {};
+      Object.keys(groupedData).sort((a, b) => groupedData[b][0].totalScore - groupedData[a][0].totalScore).forEach(key => {
+        sortedGroupedData[key] = groupedData[key];
+      });
+
+      table.innerHTML = generateTableHTML(sortedGroupedData);
     }
-  }
-}
-  
 
-for (const programmeTitle in groupedData) {
-  const rows = groupedData[programmeTitle];
-  rows.forEach((row, index) => {
+    table.innerHTML = generateTableHTML(groupedData);
 
-    tableHTML += `
-      <tr>
-        ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
-         <td>${row.placementOrder}</td>
-        <td>${row.speciality}</td>
-        <td>${row.location}</td>
-        ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
-      </tr>
-    `;
+    // Initialize the UI
+    updateScores();
+    updateLocationScores();
+    updateTotalScores();
   });
-}
 
 
-
-tableHTML += '</tbody>';
-table.innerHTML = tableHTML;
-
-// Initialize the UI
-updateScores();
-updateLocationScores();
-updateTotalScores();
-});
 
 </script>
 </body>
