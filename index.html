@@ -233,7 +233,7 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       }
     }
 
-    // Retrieve location scores from local storage and update the UI
+  // Retrieve location scores from local storage and update the UI
     function updateLocationScores() {
       const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
       for (let i = 0; i < locations.length; i++) {
@@ -243,32 +243,35 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
         locationDropdown.value = score;
       }
     }
-  document.getElementById('update-button').addEventListener('click', () => {
-  updateTotalScores();
-});
+
+    document.getElementById('update-button').addEventListener('click', () => {
+      updateTotalScores();
+      reorderTableRows();
+    });
+
 
 // Group rows by program title and add them to the allocation table
-const groupedData = data.reduce((acc, row) => {
-  if (!acc[row.programmeTitle]) {
-    acc[row.programmeTitle] = [];
-  }
-  acc[row.programmeTitle].push(row);
-  return acc;
-}, {});
+    const groupedData = data.reduce((acc, row) => {
+      if (!acc[row.programmeTitle]) {
+        acc[row.programmeTitle] = [];
+      }
+      acc[row.programmeTitle].push(row);
+      return acc;
+    }, {});
 
-const table = document.getElementById('allocation-table');
-let tableHTML = `
-  <thead>
-    <tr>
-      <th>Programme Title</th>
-      <th>Speciality</th>
-      <th>Location</th>
-      <th>Placement Order</th>
-      <th>Total Score</th>
-    </tr>
-  </thead>
-  <tbody>
-`;
+    const table = document.getElementById('allocation-table');
+    let tableHTML = `
+      <thead>
+        <tr>
+          <th>Programme Title</th>
+          <th>Speciality</th>
+          <th>Location</th>
+          <th>Placement Order</th>
+          <th>Total Score</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
 
 function updateTotalScores() {
   const tableBody = table.getElementsByTagName('tbody')[0];
@@ -312,26 +315,38 @@ function updateTotalScores() {
   }
 }
 
-for (const programmeTitle in groupedData) {
-  const rows = groupedData[programmeTitle];
-  rows.forEach((row, index) => {
+function reorderTableRows() {
+      const tableBody = table.getElementsByTagName('tbody')[0];
+      const rows = Array.from(tableBody.getElementsByTagName('tr'));
 
-    tableHTML += `
-      <tr>
-        ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
-         <td>${row.placementOrder}</td>
-        <td>${row.speciality}</td>
-        <td>${row.location}</td>
-        ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
-      </tr>
-    `;
-  });
-}
+      rows.sort((a, b) => {
+        const aScore = parseFloat(a.cells[4].textContent) || 0;
+        const bScore = parseFloat(b.cells[4].textContent) || 0;
+        return bScore - aScore;
+      });
 
+      rows.forEach(row => {
+        tableBody.appendChild(row);
+      });
+    }
 
+    for (const programmeTitle in groupedData) {
+      const rows = groupedData[programmeTitle];
+      rows.forEach((row, index) => {
+        tableHTML += `
+          <tr>
+            ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+            <td>${row.speciality}</td>
+            <td>${row.location}</td>
+            <td>${row.placementOrder}</td>
+            ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
+          </tr>
+        `;
+      });
+    }
 
-tableHTML += '</tbody>';
-table.innerHTML = tableHTML;
+    tableHTML += '</tbody>';
+    table.innerHTML = tableHTML;
 
 // Initialize the UI
 updateScores();
