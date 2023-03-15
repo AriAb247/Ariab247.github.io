@@ -82,6 +82,13 @@ h1, h2 {
   margin: 20px 0;
   max-width: 800px;
 }
+   
+  .center-container {
+   width: 80%; /* Adjust this value to your preference */
+   margin-left: auto;
+   margin-right: auto;
+  }
+    
 #allocation-table {
   margin: 1rem auto;
   border-collapse: collapse;
@@ -130,6 +137,7 @@ h1, h2 {
 <body>
   <div class="container">
     <h1 class="text-center my-4">Allocations</h1>
+    <div class="center-container">
     <p class="intro-text" style="text-align: center;">Welcome! This should help you rank and sort allocation groups based on your preferences for specialities and locations. It's easy to use and customizable, so you can make the best decisions for your allocation process.</p>
 
 <p class="intro-text" style="text-align: center;">Here's how it works:</p>
@@ -141,6 +149,7 @@ I've set them to a default of 0.5 and 0.5 but if you care more about being in a 
 The table will be sorted in descending order based on the total scores, making it easy for you to see which allocation groups best match your preferences. </p>
 
 </p>
+    </div>
     <div class="row">
       <div class="col-md-6">
         <div id="specialities-container" class="dropdown-container mb-5">
