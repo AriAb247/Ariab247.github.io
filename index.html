@@ -312,24 +312,6 @@ function updateTotalScores() {
   }
 }
   
-  reorderTable();
-    }
-
-    function reorderTable() {
-      const tableBody = table.getElementsByTagName('tbody')[0];
-      const rows = Array.from(tableBody.getElementsByTagName('tr'));
-
-      // Sort the rows based on the total score (stored in the 5th cell)
-      rows.sort((a, b) => {
-        const aTotalScore = parseFloat(a.cells[4].textContent);
-        const bTotalScore = parseFloat(b.cells[4].textContent);
-        return bTotalScore - aTotalScore;
-      });
-
-      // Clear the table body and re-append the sorted rows
-      tableBody.innerHTML = '';
-      rows.forEach(row => tableBody.appendChild(row));
-    }
 
 for (const programmeTitle in groupedData) {
   const rows = groupedData[programmeTitle];
