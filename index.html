@@ -8,12 +8,12 @@
 </head>
 <body>
   <h1>Allocations</h1>
-  <div id="specialities-container">
+  <div id="specialities-container" class="dropdown-container">
     <div id="score"></div>
   </div>
   <div id="locations-container">
     <h2>Locations</h2>
-    <div id="location-score"></div>
+    <div id="location-score" class="dropdown-container"></div>
   </div>
   <table id="allocation-table">
     <!-- table contents here -->
@@ -112,65 +112,59 @@ updateScores();
 updateLocationScores();
 });
 </script>
-<style>
-body {
-font-family: Arial, sans-serif;
-}
+ <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
 
-h1 {
-text-align: center;
-}
+    h1 {
+      text-align: center;
+    }
 
-#specialities-container {
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
-gap: 1rem;
-}
+    .dropdown-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
 
-.speciality-dropdown {
-position: relative;
-display: inline-block;
-margin: 0.5rem;
-}
+    .speciality-dropdown, .location-dropdown {
+      position: relative;
+      display: inline-block;
+      margin: 0.5rem;
+    }
 
-.speciality-dropdown select {
-display: inline-block;
-width: 150px;
-padding: 0.5rem 1rem;
-font-size: 16px;
-font-weight: bold;
-border: none;
-border-radius: 5px;
-appearance: none;
-background-color: #eee;
-cursor: pointer;
-}
+    .speciality-dropdown select, .location-dropdown select {
+      display: inline-block;
+      width: 150px;
+      padding: 0.5rem 1rem;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      appearance: none;
+      background-color: #eee;
+      cursor: pointer;
+    }
 
-.speciality-dropdown:after {
-content: '\25BC';
-position: absolute;
-top: 0;
-right: 0;
-padding: 0.5rem;
-pointer-events: none;
-}
+    .speciality-dropdown:after, .location-dropdown:after {
+      content: '\25BC';
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.5rem;
+      pointer-events: none;
+    }
 
-.speciality-dropdown select:focus {
-outline: none;
-box-shadow: 0px 0px 5px #ccc;
-}
+    .speciality-dropdown select:focus, .location-dropdown select:focus {
+      outline: none;
+      box-shadow: 0px 0px 5px #ccc;
+    }
 
-.speciality-dropdown:hover select {
-background-color: #ddd;
-}
+    .speciality-dropdown:hover select, .location-dropdown:hover select {
+      background-color: #ddd;
+    }
   
-  #locations-container {
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
-gap: 1rem;
-}
 
 #allocation-table {
 margin: 1rem auto;
