@@ -233,7 +233,7 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       }
     }
 
-  // Retrieve location scores from local storage and update the UI
+    // Retrieve location scores from local storage and update the UI
     function updateLocationScores() {
       const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
       for (let i = 0; i < locations.length; i++) {
@@ -243,44 +243,39 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
         locationDropdown.value = score;
       }
     }
-
-    document.getElementById('update-button').addEventListener('click', () => {
-      updateTotalScores();
-      reorderTableRows();
-    });
-
+  document.getElementById('update-button').addEventListener('click', () => {
+  updateTotalScores();
+});
 
 // Group rows by program title and add them to the allocation table
-    const groupedData = data.reduce((acc, row) => {
-      if (!acc[row.programmeTitle]) {
-        acc[row.programmeTitle] = [];
-      }
-      acc[row.programmeTitle].push(row);
-      return acc;
-    }, {});
+const groupedData = data.reduce((acc, row) => {
+  if (!acc[row.programmeTitle]) {
+    acc[row.programmeTitle] = [];
+  }
+  acc[row.programmeTitle].push(row);
+  return acc;
+}, {});
 
-    const table = document.getElementById('allocation-table');
-    let tableHTML = `
-      <thead>
-        <tr>
-          <th>Programme Title</th>
-          <th>Speciality</th>
-          <th>Location</th>
-          <th>Placement Order</th>
-          <th>Total Score</th>
-        </tr>
-      </thead>
-      <tbody>
-    `;
+const table = document.getElementById('allocation-table');
+let tableHTML = `
+  <thead>
+    <tr>
+      <th>Programme Title</th>
+      <th>Speciality</th>
+      <th>Location</th>
+      <th>Placement Order</th>
+      <th>Total Score</th>
+    </tr>
+  </thead>
+  <tbody>
+`;
 
 function updateTotalScores() {
   const tableBody = table.getElementsByTagName('tbody')[0];
-  const rows = Array.from(tableBody.getElementsByTagName('tr'));
+  const rows = tableBody.getElementsByTagName('tr');
 
-  const updatedRows = rows.map(tableRow => {
-    const programmeTitle = tableRow.cells[0].textContent;
+  for (const programmeTitle in groupedData) {
     const programmeRows = groupedData[programmeTitle];
-
     let totalScore = 0;
 
     for (let i = 0; i < programmeRows.length; i++) {
@@ -297,43 +292,46 @@ function updateTotalScores() {
 
       totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
     }
+   
 
-    if (tableRow.cells.length === 5) {
-      tableRow.cells[4].textContent = totalScore;
-    } else {
-      const totalScoreCell = document.createElement('td');
-      totalScoreCell.textContent = totalScore;
-      tableRow.appendChild(totalScoreCell);
+    for (let i = 0; i < rows.length; i++) {
+      const tableRow = rows[i];
+      const programmeCell = tableRow.cells[0];
+
+      if (programmeCell.textContent === programmeTitle) {
+        if (tableRow.cells.length === 5) { // Check if the row has a total score cell
+          tableRow.cells[4].textContent = totalScore;
+        } else {
+          const totalScoreCell = document.createElement('td');
+          totalScoreCell.textContent = totalScore;
+          tableRow.appendChild(totalScoreCell);
+        }
+        break;
+      }
     }
-
-    return { tableRow, totalScore };
-  });
-
-  // Sort rows by total score in descending order
-  updatedRows.sort((a, b) => b.totalScore - a.totalScore);
-
-  // Clear the table body and append the sorted rows
-  tableBody.innerHTML = '';
-  updatedRows.forEach(({ tableRow }) => tableBody.appendChild(tableRow));
+  }
 }
 
-    for (const programmeTitle in groupedData) {
-      const rows = groupedData[programmeTitle];
-      rows.forEach((row, index) => {
-        tableHTML += `
-          <tr>
-            ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
-            <td>${row.speciality}</td>
-            <td>${row.location}</td>
-            <td>${row.placementOrder}</td>
-            ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
-          </tr>
-        `;
-      });
-    }
+for (const programmeTitle in groupedData) {
+  const rows = groupedData[programmeTitle];
+  rows.forEach((row, index) => {
 
-    tableHTML += '</tbody>';
-    table.innerHTML = tableHTML;
+    tableHTML += `
+      <tr>
+        ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+         <td>${row.placementOrder}</td>
+        <td>${row.speciality}</td>
+        <td>${row.location}</td>
+        ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
+      </tr>
+    `;
+  });
+}
+
+
+
+tableHTML += '</tbody>';
+table.innerHTML = tableHTML;
 
 // Initialize the UI
 updateScores();
