@@ -161,9 +161,9 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
   .then(response => response.text())
   .then(csv => {
     const data = Papa.parse(csv, { header: true }).data;
-
-    // Create an array of unique specialities
-    const specialities = [...new Set(data.map(d => d.speciality))];
+      
+    // Create an array of unique specialities, sort alphabetically
+    const specialities = [...new Set(data.map(d => d.speciality))].sort();
 
     // Add score drop-downs to the DOM
     const scoreContainer = document.getElementById('score');
@@ -175,10 +175,12 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       scoreDropdown.setAttribute('data-speciality', speciality);
       scoreDropdown.addEventListener('change', () => {
         // Store the score in local storage
-        localStorage.setItem(`scores_${speciality}`, scoreDropdown.value);
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        scores[speciality] = scoreDropdown.value;
+        localStorage.setItem('scores', JSON.stringify(scores));
 
         // Update the UI
-        updateTotalScores();
+        updateScores();
       });
       for (let j = -10; j <= 10; j++) {
         const option = document.createElement('option');
@@ -190,8 +192,8 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       scoreContainer.appendChild(scoreEl);
     }
 
-    // Create an array of unique locations
-    const locations = [...new Set(data.map(d => d.location))];
+    // Create an array of unique locations, sort alphabetically
+    const locations = [...new Set(data.map(d => d.location))].sort();
 
     // Add location score drop-downs to the DOM
     const locationScoreContainer = document.getElementById('location-score');
@@ -203,10 +205,12 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       locationScoreDropdown.setAttribute('data-location', location);
       locationScoreDropdown.addEventListener('change', () => {
         // Store the location score in local storage
-        localStorage.setItem(`locationScores_${location}`, locationScoreDropdown.value);
+        const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+        locationScores[location] = locationScoreDropdown.value;
+        localStorage.setItem('locationScores', JSON.stringify(locationScores));
 
         // Update the UI
-        updateTotalScores();
+        updateLocationScores();
       });
       for (let j = -10; j <= 10; j++) {
         const option = document.createElement('option');
@@ -218,83 +222,79 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       locationScoreContainer.appendChild(locationScoreEl);
     }
 
-    // Add event listeners for the new input fields
-    const specialityWeightInput = document.getElementById('speciality-weight');
-    const locationWeightInput = document.getElementById('location-weight');
-    specialityWeightInput.addEventListener('change', updateTotalScores);
-    locationWeightInput.addEventListener('change', updateTotalScores);
-
-    // Update total scores based on user input
-    function updateTotalScores() {
-      const specialityWeight = parseFloat(specialityWeightInput.value);
-      const locationWeight = parseFloat(locationWeightInput.value);
-
-      // Update the total score calculation using the new weights
-      data.forEach(row => {
-        const specialityScore = parseFloat(localStorage.getItem(`scores_${row.speciality}`) || 0);
-        const locationScore = parseFloat(localStorage.getItem(`locationScores_${row.location}`) || 0);
-        row.totalScore = specialityScore * specialityWeight + locationScore * locationWeight;
-      });
-
-      // Update the allocation table
-      updateAllocationTable();
+    // Retrieve scores from local storage and update the UI
+    function updateScores() {
+      const scores = JSON.parse(localStorage.getItem('scores')) || {};
+      for (let i = 0; i < specialities.length; i++) {
+        const speciality = specialities[i];
+        const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
+        const score = scores[speciality] || 0;
+        scoreDropdown.value = score;
+      }
     }
 
-    // Function to group the allocations
-    function groupAllocations(data) {
-      return data.reduce((acc, row) => {
-        const key = row.programmeTitle;
-        if (!acc[key]) {
-          acc[key] = {
-            programmeTitle: row.programmeTitle,
-            speciality: row.speciality,
-            location: row.location,
-            names: [],
-            totalScore: 0
-          };
-        }
-        acc[key].names.push(row.name);
-        acc[key].totalScore += row.totalScore;
-        return acc;
-      }, {});
+    // Retrieve location scores from local storage and update the UI
+    function updateLocationScores() {
+      const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+      for (let i = 0; i < locations.length; i++) {
+        const location = locations[i];
+        const locationDropdown = document.querySelector(`[data-location="${location}"]`);
+        const score = locationScores[location] || 0
+        locationDropdown.value = score;
+      }
     }
 
-    // Function to update the allocation table
-    function updateAllocationTable() {
-      const groupedData = groupAllocations(data);
-      const tableData = Object.values(groupedData);
-      tableData.sort((a, b) => b.totalScore - a.totalScore);
+    // Group rows by program title and add them to the allocation table
+    const groupedData = data.reduce((acc, row) => {
+      if (!acc[row.programmeTitle]) {
+        acc[row.programmeTitle] = [];
+      }
+      acc[row.programmeTitle].push(row);
+      return acc;
+    }, {});
 
-      const table = document.getElementById('allocation-table');
-      table.innerHTML = `
-        <thead>
+    const table = document.getElementById('allocation-table');
+    let tableHTML = `
+      <thead>
+        <tr>
+          <th>Programme Title</th>
+          <th>Speciality</th>
+          <th>Location</th>
+          <th>Placement Order</th>
+          <th>Total Score</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+
+    for (const programmeTitle in groupedData) {
+      const rows = groupedData[programmeTitle];
+      rows.sort((a, b) => parseInt(a.placementOrder) - parseInt(b.placementOrder));
+
+      let totalScore = 0;
+      rows.forEach((row, index) => {
+        const specialityScore = parseInt(localStorage.getItem('scores')) || 0;
+        const locationScore = parseInt(localStorage.getItem('locationScores')) || 0;
+        totalScore += specialityScore + locationScore;
+
+        tableHTML += `
           <tr>
-            <th>Names</th>
-            <th>Programme Title</th>
-            <th>Speciality</th>
-            <th>Location</th>
-            <th>Total Score</th>
+            ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+            <td>${row.speciality}</td>
+            <td>${row.location}</td>
+            <td>${row.placementOrder}</td>
+            ${index === 0 ? `<td rowspan="${rows.length}">${totalScore}</td>` : ''}
           </tr>
-        </thead>
-        <tbody>
-          ${tableData
-            .map(
-              row => `
-            <tr>
-              <td>${row.names.join(', ')}</td>
-              <td>${row.programmeTitle}</td>
-              <td>${row.speciality}</td>
-              <td>${row.location}</td>
-              <td>${row.totalScore.toFixed(2)}</td>
-            </tr>`
-            )
-            .join('')}
-        </tbody>
-      `;
+        `;
+      });
     }
+
+    tableHTML += '</tbody>';
+    table.innerHTML = tableHTML;
 
     // Initialize the UI
-    updateTotalScores();
+    updateScores();
+    updateLocationScores();
   });
 
 
