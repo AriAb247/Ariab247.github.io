@@ -272,7 +272,7 @@ let tableHTML = `
 
 function updateTotalScores() {
   const tableBody = table.getElementsByTagName('tbody')[0];
-  const rows = Array.from(tableBody.getElementsByTagName('tr'));
+  const rows = tableBody.getElementsByTagName('tr');
 
   for (const programmeTitle in groupedData) {
     const programmeRows = groupedData[programmeTitle];
@@ -292,6 +292,7 @@ function updateTotalScores() {
 
       totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
     }
+   
 
     for (let i = 0; i < rows.length; i++) {
       const tableRow = rows[i];
@@ -309,17 +310,6 @@ function updateTotalScores() {
       }
     }
   }
-
-  // Sort the table rows based on total score
-  rows.sort((a, b) => {
-    const scoreA = parseFloat(a.cells[4].textContent);
-    const scoreB = parseFloat(b.cells[4].textContent);
-    return scoreB - scoreA;
-  });
-
-  // Clear the table body and append sorted rows
-  tableBody.innerHTML = '';
-  rows.forEach(row => tableBody.appendChild(row));
 }
 
 for (const programmeTitle in groupedData) {
@@ -338,6 +328,8 @@ for (const programmeTitle in groupedData) {
   });
 }
 
+
+
 tableHTML += '</tbody>';
 table.innerHTML = tableHTML;
 
@@ -345,13 +337,8 @@ table.innerHTML = tableHTML;
 updateScores();
 updateLocationScores();
 updateTotalScores();
+});
 
-
-
-
-
-     
-  
 </script>
 </body>
 </html>
