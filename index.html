@@ -8,66 +8,96 @@
 </head>
 <body>
   <h1>Allocations</h1>
+  <div id="specialities-container">
+    <h2>Specialities</h2>
+    <div id="specialities"></div>
+    <h2>Score</h2>
+    <div id="score"></div>
+  </div>
   <table id="allocation-table">
-    <thead>
-      <tr>
-        <th>Programme Title</th>
-        <th>Location</th>
-        <th>Speciality</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
+    <!-- table contents here -->
   </table>
   <script>
     fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
-   .then(response => response.text())
-  .then(csv => {
-    const data = Papa.parse(csv, { header: true }).data;
+      .then(response => response.text())
+      .then(csv => {
+        const data = Papa.parse(csv, { header: true }).data;
 
-    // Sort by Programme Title and Placement Order
-    data.sort((a, b) => {
-      if (a['programmeTitle'] < b['programmeTitle']) return -1;
-      if (a['programmeTitle'] > b['programmeTitle']) return 1;
-      return a['placementOrder'] - b['placementOrder'];
-    });
+        // Create an array of unique specialities
+        const specialities = [...new Set(data.map(d => d.speciality))];
 
-    // Group data by Programme Title
-    const groupedData = {};
-    data.forEach(d => {
-      const title = d['programmeTitle'];
-      if (!groupedData[title]) {
-        groupedData[title] = [];
-      }
-      groupedData[title].push({
-        location: d['location'],
-        speciality: d['speciality'],
-        placementOrder: d['placementOrder']
+        // Add specialities to the DOM
+        const specialitiesContainer = document.getElementById('specialities');
+        for (let i = 0; i < specialities.length; i++) {
+          const speciality = specialities[i];
+          const specialityEl = document.createElement('div');
+          specialityEl.innerText = speciality;
+          specialitiesContainer.appendChild(specialityEl);
+        }
+
+        // Add score buttons to the DOM
+        const scoreContainer = document.getElementById('score');
+        for (let i = 0; i < specialities.length; i++) {
+          const speciality = specialities[i];
+          const scoreEl = document.createElement('div');
+          scoreEl.innerHTML = `${speciality}: `;
+          for (let j = 1; j <= 10; j++) {
+            const scoreButton = document.createElement('button');
+            scoreButton.innerText = j;
+            scoreButton.addEventListener('click', () => {
+              // Store the score in local storage
+              const scores = JSON.parse(localStorage.getItem('scores')) || {};
+              scores[speciality] = j;
+              localStorage.setItem('scores', JSON.stringify(scores));
+
+              // Update the UI
+              updateScores();
+            });
+            scoreEl.appendChild(scoreButton);
+          }
+          scoreContainer.appendChild(scoreEl);
+        }
+
+        // Retrieve scores from local storage and update the UI
+        function updateScores() {
+          const scores = JSON.parse(localStorage.getItem('scores')) || {};
+          for (let i = 0; i < specialities.length; i++) {
+            const speciality = specialities[i];
+            const scoreButtons = document.querySelectorAll(`[data-speciality="${speciality}"]`);
+            for (let j = 0; j < scoreButtons.length; j++) {
+              const scoreButton = scoreButtons[j];
+              const score = scores[speciality] || 0;
+              scoreButton.classList.toggle('active', score === j + 1);
+            }
+          }
+        }
+
+        // Hide the table
+        const table = document.getElementById('allocation-table');
+        table.style.display = 'none';
       });
-    });
-
-    // Create table rows for each Programme Title and its allocations
-    const table = document.getElementById('allocation-table');
-    for (const title in groupedData) {
-      const allocations = groupedData[title];
-      const titleRow = document.createElement('tr');
-      const titleCell = document.createElement('td');
-      titleCell.innerText = title;
-      titleCell.setAttribute('rowspan', allocations.length);
-      titleRow.appendChild(titleCell);
-      table.appendChild(titleRow);
-      for (let i = 0; i < allocations.length; i++) {
-        const allocation = allocations[i];
-        const allocationRow = document.createElement('tr');
-        const locationCell = document.createElement('td');
-        const specialityCell = document.createElement('td');
-        locationCell.innerText = allocation.location;
-        specialityCell.innerText = allocation.speciality;
-        allocationRow.appendChild(locationCell);
-        allocationRow.appendChild(specialityCell);
-        table.appendChild(allocationRow);
-      }
-    }
-  });
   </script>
+  <style>
+    #specialities-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    #specialities > div {
+      background-color: #eee;
+      padding: 0.5rem;
+      cursor: pointer;
+      
+      #score > div > button {
+        margin-left: 0.5rem;
+}
+
+#score > div > button.active {
+  background-color: yellow;
+}
+
+</style>
 </body>
 </html>
+
