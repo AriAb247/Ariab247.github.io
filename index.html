@@ -70,15 +70,95 @@
       });
   </script>
   <style>
-    #specialities-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+    body {
+  font-family: Arial, sans-serif;
+}
 
-    #score > div {
-      margin-right: 1rem;
-    }
+h1 {
+  text-align: center;
+}
+
+#specialities-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.speciality-dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 0.5rem;
+}
+
+.speciality-dropdown select {
+  display: inline-block;
+  width: 150px;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  appearance: none;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.speciality-dropdown:after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
+  pointer-events: none;
+}
+
+.speciality-dropdown select:focus {
+  outline: none;
+  box-shadow: 0px 0px 5px #ccc;
+}
+
+.speciality-dropdown:hover select {
+  background-color: #ddd;
+}
+
+#allocation-table {
+  margin: 1rem auto;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 800px;
+}
+
+#allocation-table td, #allocation-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#allocation-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#allocation-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+#allocation-table th:hover {
+  background-color: #367d39;
+}
+
+#allocation-table td a {
+  color: #0000ff;
+  text-decoration: underline;
+}
+
+#allocation-table td a:hover {
+  color: #ff0000;
+  text-decoration: none;
+}
   </style>
 </body>
 </html>
