@@ -292,6 +292,18 @@ function updateTotalScores() {
 
       totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
     }
+    
+    // Sort the table rows based on total score
+  rows.sort((a, b) => {
+    const scoreA = parseFloat(a.cells[4].textContent);
+    const scoreB = parseFloat(b.cells[4].textContent);
+    return scoreB - scoreA;
+  });
+
+  // Clear the table body and append sorted rows
+  tableBody.innerHTML = '';
+  rows.forEach(row => tableBody.appendChild(row));
+}
 
     for (let i = 0; i < rows.length; i++) {
       const tableRow = rows[i];
