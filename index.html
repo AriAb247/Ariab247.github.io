@@ -313,32 +313,71 @@ function updateTotalScores() {
 }
   
 
-for (const programmeTitle in groupedData) {
-  const rows = groupedData[programmeTitle];
-  rows.forEach((row, index) => {
+// Update the UI
+      updateTableHTML();
+    }
 
-    tableHTML += `
-      <tr>
-        ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
-         <td>${row.placementOrder}</td>
-        <td>${row.speciality}</td>
-        <td>${row.location}</td>
-        ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
-      </tr>
-    `;
+    function updateTableHTML() {
+      for (const programmeTitle in groupedData) {
+        const rows = groupedData[programmeTitle];
+        
+        // Calculate total scores and store them in the rows
+        rows.forEach(row => {
+          const speciality = row.speciality;
+          const location = row.location;
+          const scores = JSON.parse(localStorage.getItem('scores')) || {};
+          const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+          const specialityScore = parseInt(scores[speciality]) || 0;
+          const locationScore = parseInt(locationScores[location]) || 0;
+          const specialityWeight = parseFloat(document.getElementById('speciality-weight').value) || 0;
+          const locationWeight = parseFloat(document.getElementById('location-weight').value) || 0;
+          const totalScore = specialityScore * specialityWeight + locationScore * locationWeight;
+
+          row.totalScore = totalScore;
+        });
+
+        // Sort rows by their total score
+        rows.sort((a, b) => b.totalScore - a.totalScore);
+      }
+
+      // Generate the tableHTML string
+      let tableHTML = `
+        <thead>
+          <tr>
+            <th>Programme Title</th>
+            <th>Speciality</th>
+            <th>Location</th>
+            <th>Placement Order</th>
+            <th>Total Score</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+      
+      for (const programmeTitle in groupedData) {
+        const rows = groupedData[programmeTitle];
+        rows.forEach((row, index) => {
+          tableHTML += `
+            <tr>
+              ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+              <td>${row.speciality}</td>
+              <td>${row.location}</td>
+              <td>${row.placementOrder}</td>
+              ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">${row.totalScore}</td>` : ''}
+            </tr>
+          `;
+        });
+      }
+
+      tableHTML += '</tbody>';
+      table.innerHTML = tableHTML;
+    }
+
+    // Initialize the UI
+    updateScores();
+    updateLocationScores();
+    updateTotalScores();
   });
-}
-
-
-
-tableHTML += '</tbody>';
-table.innerHTML = tableHTML;
-
-// Initialize the UI
-updateScores();
-updateLocationScores();
-updateTotalScores();
-});
 
 </script>
 </body>
