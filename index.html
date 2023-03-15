@@ -271,11 +271,17 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       const rows = groupedData[programmeTitle];
       rows.sort((a, b) => parseInt(a.placementOrder) - parseInt(b.placementOrder));
 
-      let totalScore = 0;
       rows.forEach((row, index) => {
-        const specialityScore = parseInt(localStorage.getItem('scores')) || 0;
-        const locationScore = parseInt(localStorage.getItem('locationScores')) || 0;
-        totalScore += specialityScore + locationScore;
+  const scores = JSON.parse(localStorage.getItem('scores')) || {};
+  const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+  const specialityScore = parseInt(scores[row.speciality]) || 0;
+  const locationScore = parseInt(locationScores[row.location]) || 0;
+  const specialityWeight = parseFloat(document.getElementById('speciality-weight').value) || 0;
+  const locationWeight = parseFloat(document.getElementById('location-weight').value) || 0;
+  const totalScore = specialityScore * specialityWeight + locationScore * locationWeight;
+  ...
+});
+
 
         tableHTML += `
           <tr>
