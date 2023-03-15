@@ -216,8 +216,8 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       for (let i = 0; i < locations.length; i++) {
         const location = locations[i];
         const locationDropdown = document.querySelector(`[data-location="${location}"]`);
-        const score = locationScores[location] || 0;
-        locationDropdown.value = score;
+        const score = locationScores[location] || 0 
+               locationDropdown.value = score;
       }
     }
 
@@ -238,6 +238,7 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
           <th>Speciality</th>
           <th>Location</th>
           <th>Placement Order</th>
+          <th>Total Score</th>
         </tr>
       </thead>
       <tbody>
@@ -247,13 +248,22 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       const rows = groupedData[programmeTitle];
       rows.sort((a, b) => parseInt(a.placementOrder) - parseInt(b.placementOrder));
 
+      let totalScore = 0;
       rows.forEach((row, index) => {
+        const specialityScore = parseInt(localStorage.getItem('scores')) || 0;
+        const locationScore = parseInt(localStorage.getItem('locationScores')) || 0;
+        const intrinsicSpecialityScore = 1;
+        const intrinsicLocationScore = 1;
+
+        totalScore += (intrinsicSpecialityScore * specialityScore) + (intrinsicLocationScore * locationScore);
+
         tableHTML += `
           <tr>
             ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
             <td>${row.speciality}</td>
             <td>${row.location}</td>
             <td>${row.placementOrder}</td>
+            ${index === 0 ? `<td rowspan="${rows.length}">${totalScore}</td>` : ''}
           </tr>
         `;
       });
@@ -266,6 +276,8 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
     updateScores();
     updateLocationScores();
   });
+
+
         
         
 
