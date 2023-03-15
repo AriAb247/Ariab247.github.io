@@ -5,19 +5,26 @@
   <title>Allocations</title>
   <script src="https://cdn.jsdelivr.net/npm/@mithril/core@2.0.4/mithril.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <h1>Allocations</h1>
-  <div id="specialities-container" class="dropdown-container">
-    <div id="score"></div>
+  <div class="container">
+    <h1 class="text-center my-4">Allocations</h1>
+    <div id="specialities-container" class="dropdown-container mb-5">
+      <h2 class="text-center mb-3">Specialities</h2>
+      <div id="score" class="d-flex flex-wrap justify-content-center"></div>
+    </div>
+    <div id="locations-container" class="dropdown-container mb-5">
+      <h2 class="text-center mb-3">Locations</h2>
+      <div id="location-score" class="d-flex flex-wrap justify-content-center"></div>
+    </div>
+    <table id="allocation-table" class="table table-bordered table-striped">
+      <!-- table contents here -->
+    </table>
   </div>
-  <div id="locations-container">
-    <h2>Locations</h2>
-    <div id="location-score" class="dropdown-container"></div>
-  </div>
-  <table id="allocation-table">
-    <!-- table contents here -->
-  </table>
   <script>
     fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
       .then(response => response.text())
@@ -112,13 +119,14 @@ updateScores();
 updateLocationScores();
 });
 </script>
- <style>
+<style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
     }
 
-    h1 {
-      text-align: center;
+    h1, h2 {
+      color: #4b6584;
     }
 
     .dropdown-container {
@@ -143,7 +151,8 @@ updateLocationScores();
       border: none;
       border-radius: 5px;
       appearance: none;
-      background-color: #eee;
+      background-color: #4b6584;
+      color: #fff;
       cursor: pointer;
     }
 
@@ -154,6 +163,7 @@ updateLocationScores();
       right: 0;
       padding: 0.5rem;
       pointer-events: none;
+      color: #fff;
     }
 
     .speciality-dropdown select:focus, .location-dropdown select:focus {
@@ -162,49 +172,49 @@ updateLocationScores();
     }
 
     .speciality-dropdown:hover select, .location-dropdown:hover select {
-      background-color: #ddd;
+      background-color: #2d3436;
+    }
+
+    #allocation-table {
+      margin: 1rem auto;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 800px;
     }
   
+      #allocation-table td, #allocation-table th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
 
-#allocation-table {
-margin: 1rem auto;
-border-collapse: collapse;
-width: 100%;
-max-width: 800px;
-}
+    #allocation-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
 
-#allocation-table td, #allocation-table th {
-border: 1px solid #ddd;
-padding: 8px;
-}
+    #allocation-table th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #4b6584;
+      color: white;
+    }
 
-#allocation-table tr:nth-child(even) {
-background-color: #f2f2f2;
-}
+    #allocation-table th:hover {
+      background-color: #367d39;
+    }
 
-#allocation-table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: left;
-background-color: #4CAF50;
-color: white;
-}
+    #allocation-table td a {
+      color: #0000ff;
+      text-decoration: underline;
+    }
 
-#allocation-table th:hover {
-background-color: #367d39;
-}
-
-#allocation-table td a {
-color: #0000ff;
-text-decoration: underline;
-}
-
-#allocation-table td a:hover {
-color: #ff0000;
-text-decoration: none;
-}
-</style>
+    #allocation-table td a:hover {
+      color: #ff0000;
+      text-decoration: none;
+    }
+  </style>
 </body>
 </html>
+
 
 
