@@ -11,6 +11,10 @@
   <div id="specialities-container">
     <div id="score"></div>
   </div>
+  <div id="locations-container">
+    <h2>Locations</h2>
+    <div id="location-score"></div>
+  </div>
   <table id="allocation-table">
     <!-- table contents here -->
   </table>
@@ -19,55 +23,134 @@
       .then(response => response.text())
       .then(csv => {
         const data = Papa.parse(csv, { header: true }).data;
+          
+      // Create an array of unique specialities
+    const specialities = [...new Set(data.map(d => d.speciality))];
 
-        // Create an array of unique specialities
-        const specialities = [...new Set(data.map(d => d.speciality))];
+    // Add score drop-downs to the DOM
+    const scoreContainer = document.getElementById('score');
+    for (let i = 0; i < specialities.length; i++) {
+      const speciality = specialities[i];
+      const scoreEl = document.createElement('div');
+      scoreEl.innerHTML = `${speciality}: `;
+      const scoreDropdown = document.createElement('select');
+      scoreDropdown.setAttribute('data-speciality', speciality);
+      scoreDropdown.addEventListener('change', () => {
+        // Store the score in local storage
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        scores[speciality] = scoreDropdown.value;
+        localStorage.setItem('scores', JSON.stringify(scores));
 
-        // Add score drop-downs to the DOM
-        const scoreContainer = document.getElementById('score');
-        for (let i = 0; i < specialities.length; i++) {
-          const speciality = specialities[i];
-          const scoreEl = document.createElement('div');
-          scoreEl.innerHTML = `${speciality}: `;
-          const scoreDropdown = document.createElement('select');
-          scoreDropdown.setAttribute('data-speciality', speciality);
-          scoreDropdown.addEventListener('change', () => {
-            // Store the score in local storage
-            const scores = JSON.parse(localStorage.getItem('scores')) || {};
-            scores[speciality] = scoreDropdown.value;
-            localStorage.setItem('scores', JSON.stringify(scores));
-
-            // Update the UI
-            updateScores();
-          });
-          for (let j = -10; j <= 10; j++) {
-            const option = document.createElement('option');
-            option.value = j;
-            option.text = j;
-            scoreDropdown.appendChild(option);
-          }
-          scoreEl.appendChild(scoreDropdown);
-          scoreContainer.appendChild(scoreEl);
-        }
-
-        // Retrieve scores from local storage and update the UI
-        function updateScores() {
-          const scores = JSON.parse(localStorage.getItem('scores')) || {};
-          for (let i = 0; i < specialities.length; i++) {
-            const speciality = specialities[i];
-            const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
-            const score = scores[speciality] || 0;
-            scoreDropdown.value = score;
-          }
-        }
-
-        // Hide the table
-        const table = document.getElementById('allocation-table');
-        table.style.display = 'none';
-
-        // Initialize the UI
+        // Update the UI
         updateScores();
       });
+      for (let j = -10; j <= 10; j++) {
+        const option = document.createElement('option');
+        option.value = j;
+        option.text = j;
+        scoreDropdown.appendChild(option);
+      }
+      scoreEl.appendChild(scoreDropdown);
+      scoreContainer.appendChild(scoreEl);
+    }
+
+    // Retrieve scores from local storage and update the UI
+    function updateScores() {
+      const scores = JSON.parse(localStorage.getItem('scores')) || {};
+      for (let i = 0; i < specialities.length; i++) {
+        const speciality = specialities[i];
+        const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
+        const score = scores[speciality] || 0;
+        scoreDropdown.value = score;
+      }
+    }
+
+    // Hide the table
+    const table = document.getElementById('allocation-table');
+    table.style.display = 'none';
+
+    // Initialize the UI
+    updateScores();
+
+    // Create an array of unique locations
+    const locations = [...new Set(data.map(d => d.location))];
+
+    // Add location score drop-downs to the DOM
+    const locationScoreContainer = document.getElementById('location-score');
+    for (let i = 0; i < locations.length; i++) {
+      const location = locations[i];
+      const locationScoreEl = document.createElement('div');
+      locationScoreEl.innerHTML = `${location}: `;
+      const locationScoreDropdown = document.createElement('select');
+      locationScoreDropdown.setAttribute('data-location', location);
+      locationScoreDropdown.addEventListener('change', () => {
+        // Store the location score in local storage
+        const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+    locationScores[location] = locationScoreDropdown.value;
+    localStorage.setItem('locationScores', JSON.stringify(locationScores));
+  });
+  for (let j = -10; j <= 10; j++) {
+    const option = document.createElement('option');
+    option.value = j;
+    option.text = j;
+    locationScoreDropdown.appendChild(option);
+  }
+  locationScoreEl.appendChild(locationScoreDropdown);
+  locationScoreContainer.appendChild(locationScoreEl);
+}
+                                                               
+    // Add location drop-downs to the DOM
+    const locationContainer = document.createElement('div');
+    locationContainer.id = 'location-container';
+    scoreContainer.insertAdjacentElement('afterend', locationContainer);
+    
+    const locations = [...new Set(data.map(d => d.location))];
+    for (let i = 0; i < locations.length; i++) {
+      const location = locations[i];
+      const locationEl = document.createElement('div');
+      locationEl.innerHTML = `${location}: `;
+      const locationDropdown = document.createElement('select');
+      locationDropdown.setAttribute('data-location', location);
+      locationDropdown.addEventListener('change', () => {
+        // Store the score in local storage
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        scores[location] = locationDropdown.value;
+        localStorage.setItem('scores', JSON.stringify(scores));
+      });
+      for (let j = -10; j <= 10; j++) {
+        const option = document.createElement('option');
+        option.value = j;
+        option.text = j;
+        locationDropdown.appendChild(option);
+      }
+      locationEl.appendChild(locationDropdown);
+      locationContainer.appendChild(locationEl);
+    }
+
+    // Retrieve scores from local storage and update the UI
+    function updateScores() {
+      const scores = JSON.parse(localStorage.getItem('scores')) || {};
+      for (let i = 0; i < specialities.length; i++) {
+        const speciality = specialities[i];
+        const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
+        const score = scores[speciality] || 0;
+        scoreDropdown.value = score;
+      }
+      for (let i = 0; i < locations.length; i++) {
+        const location = locations[i];
+        const locationDropdown = document.querySelector(`[data-location="${location}"]`);
+        const score = scores[location] || 0;
+        locationDropdown.value = score;
+      }
+    }
+
+    // Hide the table
+    const table = document.getElementById('allocation-table');
+    table.style.display = 'none';
+
+    // Initialize the UI
+    updateScores();
+  });
   </script>
   <style>
     body {
