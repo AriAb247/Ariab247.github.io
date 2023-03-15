@@ -26,22 +26,22 @@
 
     // Sort by Programme Title and Placement Order
     data.sort((a, b) => {
-      if (a['Programme Title'] < b['Programme Title']) return -1;
-      if (a['Programme Title'] > b['Programme Title']) return 1;
-      return a['Placement Order'] - b['Placement Order'];
+      if (a['programmeTitle'] < b['programmeTitle']) return -1;
+      if (a['programmeTitle'] > b['programmeTitle']) return 1;
+      return a['placementOrder'] - b['placementOrder'];
     });
 
     // Group data by Programme Title
     const groupedData = {};
     data.forEach(d => {
-      const title = d['Programme Title'];
+      const title = d['programmeTitle'];
       if (!groupedData[title]) {
         groupedData[title] = [];
       }
       groupedData[title].push({
-        location: d['Location'],
-        speciality: d['Speciality'],
-        placementOrder: d['Placement Order']
+        location: d['location'],
+        speciality: d['speciality'],
+        placementOrder: d['placementOrder']
       });
     });
 
