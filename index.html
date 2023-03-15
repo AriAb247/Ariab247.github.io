@@ -317,21 +317,6 @@ function updateTotalScores() {
   updatedRows.forEach(({ tableRow }) => tableBody.appendChild(tableRow));
 }
 
-function reorderTableRows() {
-      const tableBody = table.getElementsByTagName('tbody')[0];
-      const rows = Array.from(tableBody.getElementsByTagName('tr'));
-
-      rows.sort((a, b) => {
-        const aScore = parseFloat(a.cells[4].textContent) || 0;
-        const bScore = parseFloat(b.cells[4].textContent) || 0;
-        return bScore - aScore;
-      });
-
-      rows.forEach(row => {
-        tableBody.appendChild(row);
-      });
-    }
-
     for (const programmeTitle in groupedData) {
       const rows = groupedData[programmeTitle];
       rows.forEach((row, index) => {
