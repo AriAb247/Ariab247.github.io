@@ -258,13 +258,13 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
         totalScore += (intrinsicSpecialityScore * specialityScore) + (intrinsicLocationScore * locationScore);
 
         tableHTML += `
-          <tr>
-            ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
-            <td>${row.speciality}</td>
-            <td>${row.location}</td>
-            <td>${row.placementOrder}</td>
-            ${index === 0 ? `<td rowspan="${rows.length}">${totalScore}</td>` : ''}
-          </tr>
+         <tr>
+      ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+      <td>${row.speciality}</td>
+      <td>${row.location}</td>
+      <td>${row.placementOrder}</td>
+      ${index === 0 ? `<td data-programme="${programmeTitle}" rowspan="${rows.length}">0</td>` : ''}
+    </tr>
         `;
       });
     }
@@ -274,7 +274,39 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
 
     // Initialize the UI
     updateScores();
-    updateLocationScores();
+    updateLocationScores()
+
+// Add button to update total scores
+const updateButton = document.createElement('button');
+updateButton.innerText = 'Update Total Scores';
+updateButton.addEventListener('click', updateTotalScores);
+document.body.appendChild(updateButton);
+
+function updateTotalScores() {
+  const scores = JSON.parse(localStorage.getItem('scores')) || {};
+  const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+
+  for (const programmeTitle in groupedData) {
+    const rows = groupedData[programmeTitle];
+    rows.sort((a, b) => parseInt(a.placementOrder) - parseInt(b.placementOrder));
+
+    let totalScore = 0;
+    rows.forEach(row => {
+      const specialityScore = scores[row.speciality] || 0;
+      const locationScore = locationScores[row.location] || 0;
+      const intrinsicSpecialityScore = 1;
+      const intrinsicLocationScore = 1;
+
+      totalScore += (intrinsicSpecialityScore * specialityScore) + (intrinsicLocationScore * locationScore);
+    });
+
+    const totalScoreCells = document.querySelectorAll(`[data-programme="${programmeTitle}"]`);
+    totalScoreCells.forEach(cell => {
+      cell.textContent = totalScore;
+    });
+  }
+}
+
   });
 
 
