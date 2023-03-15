@@ -13,13 +13,19 @@
 <body>
   <div class="container">
     <h1 class="text-center my-4">Allocations</h1>
-    <div id="specialities-container" class="dropdown-container mb-5">
-      <h2 class="text-center mb-3">Specialities</h2>
-      <div id="score" class="d-flex flex-wrap justify-content-center"></div>
-    </div>
-    <div id="locations-container" class="dropdown-container mb-5">
-      <h2 class="text-center mb-3">Locations</h2>
-      <div id="location-score" class="d-flex flex-wrap justify-content-center"></div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="specialities-container" class="dropdown-container mb-5">
+          <h2 class="text-center mb-3">Specialities</h2>
+          <div id="score" class="d-flex flex-wrap justify-content-center"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div id="locations-container" class="dropdown-container mb-5">
+          <h2 class="text-center mb-3">Locations</h2>
+          <div id="location-score" class="d-flex flex-wrap justify-content-center"></div>
+        </div>
+      </div>
     </div>
     <table id="allocation-table" class="table table-bordered table-striped">
       <!-- table contents here -->
@@ -137,14 +143,19 @@ updateLocationScores();
     }
 
     .speciality-dropdown, .location-dropdown {
-      position: relative;
-      display: inline-block;
-      margin: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      padding: 15px;
+      margin-bottom: 15px;
     }
 
     .speciality-dropdown select, .location-dropdown select {
       display: inline-block;
-      width: 150px;
+      width: 100%;
       padding: 0.5rem 1rem;
       font-size: 16px;
       font-weight: bold;
@@ -172,7 +183,7 @@ updateLocationScores();
     }
 
     .speciality-dropdown:hover select, .location-dropdown:hover select {
-      background-color: #2d3436;
+      background-color: #367d39;
     }
 
     #allocation-table {
@@ -181,8 +192,8 @@ updateLocationScores();
       width: 100%;
       max-width: 800px;
     }
-  
-      #allocation-table td, #allocation-table th {
+
+    #allocation-table td, #allocation-table th {
       border: 1px solid #ddd;
       padding: 8px;
     }
