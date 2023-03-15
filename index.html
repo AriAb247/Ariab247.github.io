@@ -136,6 +136,7 @@ h1, h2 {
     </table>
   </div>
   <script>
+   <script>
    fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
   .then(response => response.text())
   .then(csv => {
@@ -202,71 +203,68 @@ h1, h2 {
     }
 
     function updateLocationScores() {
-  const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
-  for (let i = 0; i < locations.length; i++) {
-    const location = locations[i];
-    const locationDropdown = document.querySelector(`[data-location="${location}"]`);
-    const score = locationScores[location] || 0;
-    locationDropdown.value = score;
-  }
-}
+      const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+      for (let i = 0; i < locations.length; i++) {
+        const location = locations[i];
+        const locationDropdown = document.querySelector(`[data-location="${location}"]`);
+        const score = locationScores[location] || 0;
+        locationDropdown.value = score;
+      }
+    }
 
-const table = document.getElementById('allocation-table');
-table.style.display = 'none';
+    const table = document.getElementById('allocation-table');
+    table.style.display = 'none';
 
-// Initialize the UI
-updateScores();
-updateLocationScores();
+    // Initialize the UI
+    updateScores();
+    updateLocationScores();
 
-// Create an array to store the allocations
-const allocations = data.map(d => ({
-  speciality: d.speciality,
-  location: d.location,
-  title: d.title,
-  score: 0
-}));
+    // Create an array to store the allocations
+    const allocations = data.map(d => ({
+      speciality: d.speciality,
+      location: d.location,
+      title:
+      title: d.title,
+      score: 0
+    }));
 
-// Add a click event listener to the button
-document.getElementById('calculate-button').addEventListener('click', () => {
-  // Calculate the score for each allocation
-  allocations.forEach(allocation => {
-    const specialityScore = parseInt(JSON.parse(localStorage.getItem('scores'))[allocation.speciality] || '0');
-    const locationScore = parseInt(JSON.parse(localStorage.getItem('locationScores'))[allocation.location] || '0');
-    allocation.score = specialityScore + locationScore;
-  });
-
-  // Sort the allocations based on their scores
-  allocations.sort((a, b) => b.score - a.score);
-
-  // Clear the table and add sorted allocations
-  const table = document.getElementById('allocation-table');
-  table.innerHTML = '';
-  const headerRow = document.createElement('tr');
-  headerRow.innerHTML = `
-    <th>Title</th>
-    <th>Score</th>
-  `;
-  table.appendChild(headerRow);
-
-  allocations.forEach(allocation => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${allocation.title}</td>
-      <td>${allocation.score}</td>
-    `;
-    table.appendChild(row);
-  });
-
-  // Display the table
-  table.style.display = 'table';
-});
-
+    // Add a click event listener to the button
+    document.getElementById('calculate-button').addEventListener('click', () => {
+      // Calculate the score for each allocation
+      allocations.forEach(allocation => {
+        const specialityScore = parseInt(JSON.parse(localStorage.getItem('scores'))[allocation.speciality] || '0');
+        const locationScore = parseInt(JSON.parse(localStorage.getItem('locationScores'))[allocation.location] || '0');
+        allocation.score = specialityScore + locationScore;
       });
+
+      // Sort the allocations based on their scores
+      allocations.sort((a, b) => b.score - a.score);
+
+      // Clear the table and add sorted allocations
+      const table = document.getElementById('allocation-table');
+      table.innerHTML = '';
+      const headerRow = document.createElement('tr');
+      headerRow.innerHTML = `
+        <th>Title</th>
+        <th>Score</th>
+      `;
+      table.appendChild(headerRow);
+
+      allocations.forEach(allocation => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${allocation.title}</td>
+          <td>${allocation.score}</td>
+        `;
+        table.appendChild(row);
+      });
+
+      // Display the table
+      table.style.display = 'table';
     });
+
   });
-
-
- </script>
+</script>
 </body>
 </html>
 
