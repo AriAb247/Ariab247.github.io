@@ -9,9 +9,6 @@
 <body>
   <h1>Allocations</h1>
   <div id="specialities-container">
-    <h2>Specialities</h2>
-    <div id="specialities"></div>
-    <h2>Score</h2>
     <div id="score"></div>
   </div>
   <table id="allocation-table">
@@ -26,35 +23,30 @@
         // Create an array of unique specialities
         const specialities = [...new Set(data.map(d => d.speciality))];
 
-        // Add specialities to the DOM
-        const specialitiesContainer = document.getElementById('specialities');
-        for (let i = 0; i < specialities.length; i++) {
-          const speciality = specialities[i];
-          const specialityEl = document.createElement('div');
-          specialityEl.innerText = speciality;
-          specialitiesContainer.appendChild(specialityEl);
-        }
-
-        // Add score buttons to the DOM
+        // Add score drop-downs to the DOM
         const scoreContainer = document.getElementById('score');
         for (let i = 0; i < specialities.length; i++) {
           const speciality = specialities[i];
           const scoreEl = document.createElement('div');
           scoreEl.innerHTML = `${speciality}: `;
-          for (let j = 1; j <= 10; j++) {
-            const scoreButton = document.createElement('button');
-            scoreButton.innerText = j;
-            scoreButton.addEventListener('click', () => {
-              // Store the score in local storage
-              const scores = JSON.parse(localStorage.getItem('scores')) || {};
-              scores[speciality] = j;
-              localStorage.setItem('scores', JSON.stringify(scores));
+          const scoreDropdown = document.createElement('select');
+          scoreDropdown.setAttribute('data-speciality', speciality);
+          scoreDropdown.addEventListener('change', () => {
+            // Store the score in local storage
+            const scores = JSON.parse(localStorage.getItem('scores')) || {};
+            scores[speciality] = scoreDropdown.value;
+            localStorage.setItem('scores', JSON.stringify(scores));
 
-              // Update the UI
-              updateScores();
-            });
-            scoreEl.appendChild(scoreButton);
+            // Update the UI
+            updateScores();
+          });
+          for (let j = 0; j <= 10; j++) {
+            const option = document.createElement('option');
+            option.value = j;
+            option.text = j;
+            scoreDropdown.appendChild(option);
           }
+          scoreEl.appendChild(scoreDropdown);
           scoreContainer.appendChild(scoreEl);
         }
 
@@ -63,18 +55,18 @@
           const scores = JSON.parse(localStorage.getItem('scores')) || {};
           for (let i = 0; i < specialities.length; i++) {
             const speciality = specialities[i];
-            const scoreButtons = document.querySelectorAll(`[data-speciality="${speciality}"]`);
-            for (let j = 0; j < scoreButtons.length; j++) {
-              const scoreButton = scoreButtons[j];
-              const score = scores[speciality] || 0;
-              scoreButton.classList.toggle('active', score === j + 1);
-            }
+            const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
+            const score = scores[speciality] || 0;
+            scoreDropdown.value = score;
           }
         }
 
         // Hide the table
         const table = document.getElementById('allocation-table');
         table.style.display = 'none';
+
+        // Initialize the UI
+        updateScores();
       });
   </script>
   <style>
@@ -84,20 +76,10 @@
       gap: 1rem;
     }
 
-    #specialities > div {
-      background-color: #eee;
-      padding: 0.5rem;
-      cursor: pointer;
-      
-      #score > div > button {
-        margin-left: 0.5rem;
-}
-
-#score > div > button.active {
-  background-color: yellow;
-}
-
-</style>
+    #score > div {
+      margin-right: 1rem;
+    }
+  </style>
 </body>
 </html>
 
