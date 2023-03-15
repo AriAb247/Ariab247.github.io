@@ -9,169 +9,53 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
-<body>
-  <div class="container">
-    <h1 class="text-center my-4">Allocations</h1>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="specialities-container" class="dropdown-container mb-5">
-          <h2 class="text-center mb-3">Specialities</h2>
-          <div id="score" class="d-flex flex-column align-items-center"></div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div id="locations-container" class="dropdown-container mb-5">
-          <h2 class="text-center mb-3">Locations</h2>
-          <div id="location-score" class="d-flex flex-column align-items-center"></div>
-        </div>
-      </div>
-    </div>
-    <table id="allocation-table" class="table table-bordered table-striped">
-      <!-- table contents here -->
-    </table>
-  </div>
-  <script>
-    fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
-      .then(response => response.text())
-      .then(csv => {
-        const data = Papa.parse(csv, { header: true }).data;
-          
-        // Create an array of unique specialities
-        const specialities = [...new Set(data.map(d => d.speciality))];
-
-        // Add score drop-downs to the DOM
-        const scoreContainer = document.getElementById('score');
-        for (let i = 0; i < specialities.length; i++) {
-          const speciality = specialities[i];
-          const scoreEl = document.createElement('div');
-          scoreEl.innerHTML = `${speciality}: `;
-          const scoreDropdown = document.createElement('select');
-          scoreDropdown.setAttribute('data-speciality', speciality);
-          scoreDropdown.addEventListener('change', () => {
-            // Store the score in local storage
-            const scores = JSON.parse(localStorage.getItem('scores')) || {};
-            scores[speciality] = scoreDropdown.value;
-            localStorage.setItem('scores', JSON.stringify(scores));
-
-            // Update the UI
-            updateScores();
-          });
-          for (let j = -10; j <= 10; j++) {
-            const option = document.createElement('option');
-            option.value = j;
-            option.text = j;
-            scoreDropdown.appendChild(option);
-          }
-          scoreEl.appendChild(scoreDropdown);
-          scoreContainer.appendChild(scoreEl);
-        }
-
-        // Retrieve scores from local storage and update the UI
-        function updateScores() {
-          const scores = JSON.parse(localStorage.getItem('scores')) || {};
-          for (let i = 0; i < specialities.length; i++) {
-            const speciality = specialities[i];
-            const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
-            const score = scores[speciality] || 0;
-            scoreDropdown.value = score;
-          }
-        }
-
-        // Create an array of unique locations
-        const locations = [...new Set(data.map(d => d.location))];
-
-        // Add location score drop-downs to the DOM
-        const locationScoreContainer = document.getElementById('location-score');
-        for (let i = 0; i < locations.length; i++) {
-          const location = locations[i];
-          const locationScoreEl = document.createElement('div');
-          locationScoreEl.innerHTML = `${location}: `;
-          const locationScoreDropdown = document.createElement('select');
-          locationScoreDropdown.setAttribute('data-location', location);
-          locationScoreDropdown.addEventListener('change', () => {
-            // Store the location score in local storage
-            const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
-            locationScores[location] = locationScoreDropdown.value;
-localStorage.setItem('locationScores', JSON.stringify(locationScores));
-});
-for (let j = -10; j <= 10; j++) {
-  const option = document.createElement('option');
-  option.value = j;
-  option.text = j;
-  locationScoreDropdown.appendChild(option);
-}
-locationScoreEl.appendChild(locationScoreDropdown);
-locationScoreContainer.appendChild(locationScoreEl);
-}
-
-// Retrieve scores from local storage and update the UI
-function updateLocationScores() {
-  const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
-  for (let i = 0; i < locations.length; i++) {
-    const location = locations[i];
-    const locationDropdown = document.querySelector(`[data-location="${location}"]`);
-    const score = locationScores[location] || 0;
-    locationDropdown.value = score;
-  }
-}
-
-// Hide the table
-const table = document.getElementById('allocation-table');
-table.style.display = 'none';
-
-// Initialize the UI
-updateScores();
-updateLocationScores();
-});
- <style>
+  <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-    }
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
 
-    h1, h2 {
-      color: #4b6584;
-    }
+h1, h2 {
+  color: #4b6584;
+}
 
-    .dropdown-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-    .speciality-dropdown, .location-dropdown {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #ffffff;
-      border-radius: 5px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-      padding: 15px;
-      margin-bottom: 15px;
-      width: 100%;
-    }
+.speciality-dropdown, .location-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  padding: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+}
 
-    .speciality-dropdown select, .location-dropdown select {
-      display: inline-block;
-      width: 100%;
-      padding: 0.5rem 1rem;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      appearance: none;
-      background-color: #4b6584;
-      color: #fff;
-      cursor: pointer;
-      margin-top: 5px;
-    }
+.speciality-dropdown select, .location-dropdown select {
+  display: inline-block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  appearance: none;
+  background-color: #4b6584;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 5px;
+}
 
-    .speciality-dropdown:after, .location-dropdown:after {
-      content: '\25BC';
-      position: absolute;
-       top: 0.5rem;
+.speciality-dropdown:after, .location-dropdown:after {
+  content: '\25BC';
+  position: absolute;
+  top: 0.5rem;
   right: 1rem;
   padding: 0.5rem;
   pointer-events: none;
@@ -224,7 +108,127 @@ updateLocationScores();
   color: #ff0000;
   text-decoration: none;
 }
-  </style>
+ </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center my-4">Allocations</h1>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="specialities-container" class="dropdown-container mb-5">
+          <h2 class="text-center mb-3">Specialities</h2>
+          <div id="score" class="d-flex flex-column align-items-center"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div id="locations-container" class="dropdown-container mb-5">
+          <h2 class="text-center mb-3">Locations</h2>
+          <div id="location-score" class="d-flex flex-column align-items-center"></div>
+        </div>
+      </div>
+    </div>
+    <table id="allocation-table" class="table table-bordered table-striped">
+       <!-- table contents here -->
+      </table>
+  </div>
+  <script>
+    fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
+  .then(response => response.text())
+  .then(csv => {
+    const data = Papa.parse(csv, { header: true }).data;
+      
+    // Create an array of unique specialities, sort alphabetically
+    const specialities = [...new Set(data.map(d => d.speciality))].sort();
+
+    // Add score drop-downs to the DOM
+    const scoreContainer = document.getElementById('score');
+    for (let i = 0; i < specialities.length; i++) {
+      const speciality = specialities[i];
+      const scoreEl = document.createElement('div');
+      scoreEl.innerHTML = `${speciality}: `;
+      const scoreDropdown = document.createElement('select');
+      scoreDropdown.setAttribute('data-speciality', speciality);
+      scoreDropdown.addEventListener('change', () => {
+        // Store the score in local storage
+        const scores = JSON.parse(localStorage.getItem('scores')) || {};
+        scores[speciality] = scoreDropdown.value;
+        localStorage.setItem('scores', JSON.stringify(scores));
+
+        // Update the UI
+        updateScores();
+      });
+      for (let j = -10; j <= 10; j++) {
+        const option = document.createElement('option');
+        option.value = j;
+        option.text = j;
+        scoreDropdown.appendChild(option);
+      }
+      scoreEl.appendChild(scoreDropdown);
+      scoreContainer.appendChild(scoreEl);
+    }
+
+    // Create an array of unique locations, sort alphabetically
+    const locations = [...new Set(data.map(d => d.location))].sort();
+
+    // Add location score drop-downs to the DOM
+    const locationScoreContainer = document.getElementById('location-score');
+    for (let i = 0; i < locations.length; i++) {
+      const location = locations[i];
+      const locationScoreEl = document.createElement('div');
+      locationScoreEl.innerHTML = `${location}: `;
+      const locationScoreDropdown = document.createElement('select');
+      locationScoreDropdown.setAttribute('data-location', location);
+       locationScoreDropdown.addEventListener('change', () => {
+        
+         // Store the location score in local storage
+        const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+        locationScores[location] = locationScoreDropdown.value;
+        localStorage.setItem('locationScores', JSON.stringify(locationScores));
+
+        // Update the UI
+        updateLocationScores();
+      });
+      for (let j = -10; j <= 10; j++) {
+        const option = document.createElement('option');
+        option.value = j;
+        option.text = j;
+        locationScoreDropdown.appendChild(option);
+      }
+      locationScoreEl.appendChild(locationScoreDropdown);
+      locationScoreContainer.appendChild(locationScoreEl);
+    }
+
+    // Retrieve scores from local storage and update the UI
+    function updateScores() {
+      const scores = JSON.parse(localStorage.getItem('scores')) || {};
+      for (let i = 0; i < specialities.length; i++) {
+        const speciality = specialities[i];
+        const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
+        const score = scores[speciality] || 0;
+        scoreDropdown.value = score;
+      }
+    }
+
+    // Retrieve location scores from local storage and update the UI
+    function updateLocationScores() {
+      const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+      for (let i = 0; i < locations.length; i++) {
+        const location = locations[i];
+        const locationDropdown = document.querySelector(`[data-location="${location}"]`);
+        const score = locationScores[location] || 0;
+        locationDropdown.value = score;
+      }
+    }
+
+    // Hide the table
+    const table = document.getElementById('allocation-table');
+    table.style.display = 'none';
+
+    // Initialize the UI
+    updateScores();
+    updateLocationScores();
+  });
+ </script>
 </body>
 </html>
 
