@@ -299,8 +299,8 @@ function updateTotalScores() {
       const programmeCell = tableRow.cells[0];
 
       if (programmeCell.textContent === programmeTitle) {
-        if (tableRow.cells.length === 2) { // Check if the row has a total score cell
-          tableRow.cells[1].textContent = totalScore;
+        if (tableRow.cells.length === 5) { // Check if the row has a total score cell
+          tableRow.cells[4].textContent = totalScore;
         } else {
           const totalScoreCell = document.createElement('td');
           totalScoreCell.textContent = totalScore;
@@ -319,6 +319,9 @@ for (const programmeTitle in groupedData) {
     tableHTML += `
       <tr>
         ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+         <td>${row.placementOrder}</td>
+        <td>${row.speciality}</td>
+        <td>${row.location}</td>
         ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
       </tr>
     `;
