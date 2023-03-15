@@ -1,4 +1,4 @@
-fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
+fetch('https://raw.githubusercontent.com/ariAb247/ariab247.github.io/main/Allocations_sheet.csv')
   .then(response => response.text())
   .then(csv => {
     const data = Papa.parse(csv, { header: true }).data;
