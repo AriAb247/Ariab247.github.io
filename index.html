@@ -259,38 +259,38 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
 
     const table = document.getElementById('allocation-table');
 
-    function generateTableHTML(groupedData) {
-      let tableHTML = `
-        <thead>
-          <tr>
-            <th>Programme Title</th>
-            <th>Speciality</th>
-            <th>Location</th>
-            <th>Placement Order</th>
-            <th>Total Score</th>
-          </tr>
-        </thead>
-        <tbody>
+   function generateTableHTML(groupedData) {
+  let tableHTML = `
+    <thead>
+      <tr>
+        <th>Programme Title</th>
+        <th>Speciality</th>
+        <th>Location</th>
+        <th>Placement Order</th>
+        <th>Total Score</th>
+      </tr>
+    </thead>
+    <tbody>
+  `;
+
+  for (const programmeTitle in groupedData) {
+    const rows = groupedData[programmeTitle];
+    rows.forEach((row, index) => {
+      tableHTML += `
+        <tr>
+          ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+          <td>${row.speciality}</td>
+          <td>${row.location}</td>
+          <td>${row.placementOrder}</td>
+          ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">${row.totalScore}</td>` : ''}
+        </tr>
       `;
+    });
+  }
 
-      for (const programmeTitle in groupedData) {
-        const rows = groupedData[programmeTitle];
-        rows.forEach((row, index) => {
-          tableHTML += `
-            <tr>
-              ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
-              <td>${row.speciality}</td>
-              <td>${row.location}</td>
-              <td>${row.placementOrder}</td>
-              ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
-            </tr>
-          `;
-        });
-      }
-
-      tableHTML += '</tbody>';
-      return tableHTML;
-    }
+  tableHTML += '</tbody>';
+  return tableHTML;
+}
 
     function updateTotalScores() {
       const scores = JSON.parse(localStorage.getItem('scores')) || {};
