@@ -4,11 +4,11 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
     const data = Papa.parse(csv, { header: true }).data;
 
     // Sort by programmeTitle and placementOrder
-    data.sort((a, b) => {
-      if (a['programmeTitle'] < b['programmeTitle']) return -1;
-      if (a['programmeTitle'] > b['programmeTitle']) return 1;
-      return a['placementOrder'] - b['placementOrder'];
-    });
+   data.sort((a, b) => {
+  if (a['programmeTitle'] < b['programmeTitle']) return -1;
+  if (a['programmeTitle'] > b['programmeTitle']) return 1;
+  return 0;
+});
 
     // Group data by programmeTitle
     const groupedData = {};
