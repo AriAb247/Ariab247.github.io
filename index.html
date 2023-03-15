@@ -126,6 +126,11 @@ h1, h2 {
           <div id="location-score" class="d-flex flex-column align-items-center"></div>
         </div>
       </div>
+      <div class="row">
+      <div class="col-md-12 text-center">
+        <button id="calculate-button" class="btn btn-primary mt-4 mb-5">Calculate Rankings</button>
+      </div>
+    </div>
     </div>
     <table id="allocation-table" class="table table-bordered table-striped">
        <!-- table contents here -->
@@ -227,6 +232,48 @@ h1, h2 {
     // Initialize the UI
     updateScores();
     updateLocationScores();
+      
+      // Create an array to store the allocations
+  const allocations = data.map(d => ({
+    speciality: d.speciality,
+    location: d.location,
+    title: d.title,
+    score: 0
+  }));
+
+  // Add a click event listener to the button
+  document.getElementById('calculate-button').addEventListener('click', () => {
+    // Calculate the score for each allocation
+    allocations.forEach(allocation => {
+      const specialityScore = parseInt(JSON.parse(localStorage.getItem('scores'))[allocation.speciality] || '0');
+      const locationScore = parseInt(JSON.parse(localStorage.getItem('locationScores'))[allocation.location] || '0');
+      allocation.score = specialityScore + locationScore;
+    });
+
+    // Sort the allocations based on their scores
+    allocations.sort((a, b) => b.score - a.score);
+
+    // Clear the table and add sorted allocations
+    const table = document.getElementById('allocation-table');
+    table.innerHTML = '';
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+      <th>Title</th>
+      <th>Score</th>
+    `;
+    table.appendChild(headerRow);
+
+    allocations.forEach(allocation => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${allocation.title}</td>
+        <td>${allocation.score}</td>
+      `;
+      table.appendChild(row);
+    });
+
+    // Display the table
+    table.style.display = 'table';
   });
  </script>
 </body>
