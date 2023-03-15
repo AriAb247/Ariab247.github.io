@@ -235,63 +235,69 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
         const locationScore = parseFloat(localStorage.getItem(`locationScores_${row.location}`) || 0);
         row.totalScore = specialityScore * specialityWeight + locationScore * locationWeight;
       });
-      
-      // Function to group the allocations
-        function groupAllocations(data) {
-          return data.reduce((acc, row) => {
-            const key = row.programmeTitle;
-            if (!acc[key]) {
-              acc[key] = {
-                programmeTitle: row.programmeTitle,
-                speciality: row.speciality,
-                location: row.location,
-                names: [],
-                totalScore: 0
-              };
-            }
-            acc[key].names.push(row.name);
-            acc[key].totalScore += row.totalScore;
-            return acc;
-          }, {});
+
+      // Update the allocation table
+      updateAllocationTable();
+    }
+
+    // Function to group the allocations
+    function groupAllocations(data) {
+      return data.reduce((acc, row) => {
+        const key = row.programmeTitle;
+        if (!acc[key]) {
+          acc[key] = {
+            programmeTitle: row.programmeTitle,
+            speciality: row.speciality,
+            location: row.location,
+            names: [],
+            totalScore: 0
+          };
         }
+        acc[key].names.push(row.name);
+        acc[key].totalScore += row.totalScore;
+        return acc;
+      }, {});
+    }
 
-        // Function to update the allocation table
-        function updateAllocationTable() {
-          const groupedData = groupAllocations(data);
-          const tableData = Object.values(groupedData);
-          tableData.sort((a, b) => b.totalScore - a.totalScore);
+    // Function to update the allocation table
+    function updateAllocationTable() {
+      const groupedData = groupAllocations(data);
+      const tableData = Object.values(groupedData);
+      tableData.sort((a, b) => b.totalScore - a.totalScore);
 
-          const table = document.getElementById('allocation-table');
-          table.innerHTML = `
-            <thead>
-              <tr>
-                <th>Names</th>
-                <th>Programme Title</th>
-                <th>Speciality</th>
-                <th>Location</th>
-                <th>Total Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tableData
-                .map(
-                  row => `
-                <tr>
-                  <td>${row.names.join(', ')}</td>
-                  <td>${row.programmeTitle}</td>
-                  <td>${row.speciality}</td>
-                  <td>${row.location}</td>
-                  <td>${row.totalScore.toFixed(2)}</td>
-                </tr>`
-                )
-                .join('')}
-            </tbody>
-          `;
-        }
+      const table = document.getElementById('allocation-table');
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Names</th>
+            <th>Programme Title</th>
+            <th>Speciality</th>
+            <th>Location</th>
+            <th>Total Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableData
+            .map(
+              row => `
+            <tr>
+              <td>${row.names.join(', ')}</td>
+              <td>${row.programmeTitle}</td>
+              <td>${row.speciality}</td>
+              <td>${row.location}</td>
+              <td>${row.totalScore.toFixed(2)}</td>
+            </tr>`
+            )
+            .join('')}
+        </tbody>
+      `;
+    }
 
-        // Initialize the UI
-        updateTotalScores();
-      });
+    // Initialize the UI
+    updateTotalScores();
+  });
+
+
 
      
   
