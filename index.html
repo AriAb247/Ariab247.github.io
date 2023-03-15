@@ -1,20 +1,39 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Allocations Table</title>
-    <script src='script.js'></script>
-  </head>
-  <body>
-    <table id="allocation-table">
-      <thead>
-        <tr>
-          <th>Programme Title</th>
-          <th>Placement Order</th>
-          <th>Location</th>
-          <th>Speciality</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>Allocations</title>
+  <script src="https://cdn.jsdelivr.net/npm/@mithril/core@2.0.4/mithril.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+  <h1>Allocations</h1>
+  <table id="allocation-table">
+    <thead>
+      <tr>
+        <th>Programme Title</th>
+        <th>Location</th>
+        <th>Speciality</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Allocations_sheet.csv')
+      .then(response => response.text())
+      .then(csv => {
+        const data = Papa.parse(csv, { header: true }).data;
+        const table = document.getElementById('allocation-table').getElementsByTagName('tbody')[0];
+        data.forEach(row => {
+          const tableRow = table.insertRow(-1);
+          const programmeTitleCell = tableRow.insertCell(0);
+          const locationCell = tableRow.insertCell(1);
+          const specialityCell = tableRow.insertCell(2);
+          programmeTitleCell.innerText = row.programmeTitle;
+          locationCell.innerText = row.location;
+          specialityCell.innerText = row.speciality;
+        });
+      });
+  </script>
+</body>
 </html>
