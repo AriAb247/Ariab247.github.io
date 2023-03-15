@@ -161,7 +161,7 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
   .then(response => response.text())
   .then(csv => {
     const data = Papa.parse(csv, { header: true }).data;
-      
+
     // Create an array of unique specialities, sort alphabetically
     const specialities = [...new Set(data.map(d => d.speciality))].sort();
 
@@ -239,39 +239,38 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       for (let i = 0; i < locations.length; i++) {
         const location = locations[i];
         const locationDropdown = document.querySelector(`[data-location="${location}"]`);
-        const score = locationScores[location] || 0
+        const score = locationScores[location] || 0;
         locationDropdown.value = score;
       }
     }
-
   document.getElementById('update-button').addEventListener('click', () => {
   updateTotalScores();
 });
 
-    // Group rows by program title and add them to the allocation table
-    const groupedData = data.reduce((acc, row) => {
-      if (!acc[row.programmeTitle]) {
-        acc[row.programmeTitle] = [];
-      }
-      acc[row.programmeTitle].push(row);
-      return acc;
-    }, {});
+// Group rows by program title and add them to the allocation table
+const groupedData = data.reduce((acc, row) => {
+  if (!acc[row.programmeTitle]) {
+    acc[row.programmeTitle] = [];
+  }
+  acc[row.programmeTitle].push(row);
+  return acc;
+}, {});
 
-    const table = document.getElementById('allocation-table');
-    let tableHTML = `
-      <thead>
-        <tr>
-          <th>Programme Title</th>
-          <th>Speciality</th>
-          <th>Location</th>
-          <th>Placement Order</th>
-          <th>Total Score</th>
-        </tr>
-      </thead>
-      <tbody>
-    `;
-  
-  function updateTotalScores() {
+const table = document.getElementById('allocation-table');
+let tableHTML = `
+  <thead>
+    <tr>
+      <th>Programme Title</th>
+      <th>Speciality</th>
+      <th>Location</th>
+      <th>Placement Order</th>
+      <th>Total Score</th>
+    </tr>
+  </thead>
+  <tbody>
+`;
+
+function updateTotalScores() {
   const tableBody = table.getElementsByTagName('tbody')[0];
   const rows = tableBody.getElementsByTagName('tr');
 
@@ -290,7 +289,7 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       const locationScore = parseInt(locationScores[location]) || 0;
       const specialityWeight = parseFloat(document.getElementById('speciality-weight').value) || 0;
       const locationWeight = parseFloat(document.getElementById('location-weight').value) || 0;
-      
+
       totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
     }
 
@@ -312,29 +311,30 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
   }
 }
 
-        tableHTML += `
-          <tr>
-            ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
-            <td>${row.speciality}</td>
-            <td>${row.location}</td>
-            <td>${row.placementOrder}</td>
-            ${index === 0 ? `<td rowspan="${rows.length}">${totalScore}</td>` : ''}
-          </tr>
-        `;
-      });
-    }
-
-    tableHTML += '</tbody>';
-    table.innerHTML = tableHTML;
-    
-   
-
-    // Initialize the UI
-  
-    updateScores();
-    updateLocationScores();
-    updateTotalScores();
+for (const programmeTitle in groupedData) {
+  const rows = groupedData[programmeTitle];
+  rows.forEach((row, index) => {
+    tableHTML += `
+      <tr>
+        ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+        <td>${row.speciality}</td>
+        <td>${row.location}</td>
+        <td>${row.placementOrder}</td>
+        ${index === 0 ? `<td rowspan="${rows.length}">${totalScore}</td>` : ''}
+      </tr>
+    `;
   });
+}
+
+tableHTML += '</tbody>';
+table.innerHTML = tableHTML;
+
+// Initialize the UI
+updateScores();
+updateLocationScores();
+updateTotalScores();
+});
+
 
 
 
