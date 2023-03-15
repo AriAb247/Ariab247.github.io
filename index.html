@@ -314,17 +314,20 @@ function updateTotalScores() {
 for (const programmeTitle in groupedData) {
   const rows = groupedData[programmeTitle];
   rows.forEach((row, index) => {
+    let totalScore = 0;
+
     tableHTML += `
       <tr>
         ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
         <td>${row.speciality}</td>
         <td>${row.location}</td>
         <td>${row.placementOrder}</td>
-        ${index === 0 ? `<td rowspan="${rows.length}">${totalScore}</td>` : ''}
+        ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">${totalScore}</td>` : ''}
       </tr>
     `;
   });
 }
+
 
 tableHTML += '</tbody>';
 table.innerHTML = tableHTML;
