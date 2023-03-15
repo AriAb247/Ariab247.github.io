@@ -270,28 +270,6 @@ let tableHTML = `
   <tbody>
 `;
 
-  // Add a function to sort the table by total score
-    function sortTableByTotalScore() {
-      const table = document.getElementById("allocation-table");
-      const rows = Array.from(table.getElementsByTagName("tr"));
-      const headerRow = rows.shift(); // Remove header row from the rows array
-
-      rows.sort((rowA, rowB) => {
-        const scoreA = parseFloat(rowA.cells[4].textContent);
-        const scoreB = parseFloat(rowB.cells[4].textContent);
-        return scoreB - scoreA; // Sort in descending order
-      });
-
-      const tableBody = table.getElementsByTagName("tbody")[0];
-      tableBody.innerHTML = ""; // Clear the table body
-      tableBody.appendChild(headerRow); // Re-add the header row
-
-      // Re-add the sorted rows
-      rows.forEach(row => {
-        tableBody.appendChild(row);
-      });
-    }
-  
 function updateTotalScores() {
   const tableBody = table.getElementsByTagName('tbody')[0];
   const rows = tableBody.getElementsByTagName('tr');
@@ -330,9 +308,6 @@ function updateTotalScores() {
         }
         break;
       }
-      // Call the sortTableByTotalScore function after updating scores
-      sortTableByTotalScore();
-    }
     }
   }
 }
