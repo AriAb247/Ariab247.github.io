@@ -319,6 +319,7 @@ for (const programmeTitle in groupedData) {
     tableHTML += `
       <tr>
         ${index === 0 ? `<td rowspan="${rows.length}">${programmeTitle}</td>` : ''}
+        <td>${row.placementOrder}</td>
         ${index === 0 ? `<td rowspan="${rows.length}" class="total-score">0</td>` : ''}
       </tr>
     `;
