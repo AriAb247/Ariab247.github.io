@@ -100,20 +100,16 @@
 }
                                                                
 
-    // Retrieve scores from local storage and update the UI
-    function updateScores() {
-      const scores = JSON.parse(localStorage.getItem('scores')) || {};
-      for (let i = 0; i < specialities.length; i++) {
-        const speciality = specialities[i];
-        const scoreDropdown = document.querySelector(`[data-speciality="${speciality}"]`);
-        const score = scores[speciality] || 0;
-        scoreDropdown.value = score;
-      }
-      for (let i = 0; i < locations.length; i++) {
-        const location = locations[i];
-        const locationDropdown = document.querySelector(`[data-location="${location}"]`);
-        const score = scores[location] || 0;
-        locationDropdown.value = score;
+   // Retrieve scores from local storage and update the UI
+function updateLocationScores() {
+  const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+  for (let i = 0; i < locations.length; i++) {
+    const location = locations[i];
+    const locationDropdown = document.querySelector(`[data-location="${location}"]`);
+    const score = locationScores[location] || 0;
+    locationDropdown.value = score;
+  }
+}
       }
     }
 
@@ -122,7 +118,7 @@
     table.style.display = 'none';
 
     // Initialize the UI
-    updateScores();
+    updateLocationScores();
   });
   </script>
   <style>
