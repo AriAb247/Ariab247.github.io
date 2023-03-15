@@ -72,7 +72,16 @@ h1, h2 {
 .speciality-dropdown:hover select, .location-dropdown:hover select {
   background-color: #367d39;
 }
-
+    
+.intro-text {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  text-align: justify;
+  margin: 20px 0;
+  max-width: 800px;
+}
 #allocation-table {
   margin: 1rem auto;
   border-collapse: collapse;
@@ -121,11 +130,11 @@ h1, h2 {
 <body>
   <div class="container">
     <h1 class="text-center my-4">Allocations</h1>
-    <p>Welcome! This should help you rank and sort allocation groups based on your preferences for specialities and locations. It's easy to use and customizable, so you can make the best decisions for your allocation process.
+    <p class="intro-text">Welcome! This should help you rank and sort allocation groups based on your preferences for specialities and locations. It's easy to use and customizable, so you can make the best decisions for your allocation process.</p>
 
-Here's how it works:
+<p class="intro-text">Here's how it works:</p>
 
-Start by setting your preference scores for each speciality and location using the drop-down menus. You can choose a score between -10 and 10, where -10 represents the actively avoiding and 10 represents the most preferred.
+<p class="intro-text">Start by setting your preference scores for each speciality and location using the drop-down menus. You can choose a score between -10 and 10, where -10 represents wanting to actively avoid and 10 represents the most preferred options.</p>
 Next, you can set the weights for speciality and location preferences using the "Speciality Weight" and "Location Weight" input boxes. These weights determine the importance of each preference in the final total score calculation. 
 I've set them to a default of 0.5 and 0.5 but if you care more about being in a specific place or specific speciality, you can play around with those to change your preferences
 Once you've set your preferences and weights, click the "Rank Me" button to calculate and display the total scores for each allocation group in the table.
