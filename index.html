@@ -17,13 +17,13 @@
       <div class="col-md-6">
         <div id="specialities-container" class="dropdown-container mb-5">
           <h2 class="text-center mb-3">Specialities</h2>
-          <div id="score" class="d-flex flex-wrap justify-content-center"></div>
+          <div id="score" class="d-flex flex-column align-items-center"></div>
         </div>
       </div>
       <div class="col-md-6">
         <div id="locations-container" class="dropdown-container mb-5">
           <h2 class="text-center mb-3">Locations</h2>
-          <div id="location-score" class="d-flex flex-wrap justify-content-center"></div>
+          <div id="location-score" class="d-flex flex-column align-items-center"></div>
         </div>
       </div>
     </div>
@@ -125,7 +125,7 @@ updateScores();
 updateLocationScores();
 });
 </script>
-<style>
+  <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
@@ -151,6 +151,7 @@ updateLocationScores();
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
       padding: 15px;
       margin-bottom: 15px;
+      width: 100%;
     }
 
     .speciality-dropdown select, .location-dropdown select {
@@ -172,7 +173,7 @@ updateLocationScores();
       position: absolute;
       top: 0;
       right: 0;
-      padding: 0.5rem;
+      padding:0.5rem;
       pointer-events: none;
       color: #fff;
     }
