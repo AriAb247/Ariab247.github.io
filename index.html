@@ -124,8 +124,7 @@ table.style.display = 'none';
 updateScores();
 updateLocationScores();
 });
-</script>
-  <style>
+ <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
@@ -166,64 +165,65 @@ updateLocationScores();
       background-color: #4b6584;
       color: #fff;
       cursor: pointer;
+      margin-top: 5px;
     }
 
     .speciality-dropdown:after, .location-dropdown:after {
       content: '\25BC';
       position: absolute;
-      top: 0;
-      right: 0;
-      padding:0.5rem;
-      pointer-events: none;
-      color: #fff;
-    }
+       top: 0.5rem;
+  right: 1rem;
+  padding: 0.5rem;
+  pointer-events: none;
+  color: #fff;
+}
 
-    .speciality-dropdown select:focus, .location-dropdown select:focus {
-      outline: none;
-      box-shadow: 0px 0px 5px #ccc;
-    }
+.speciality-dropdown select:focus, .location-dropdown select:focus {
+  outline: none;
+  box-shadow: 0px 0px 5px #ccc;
+}
 
-    .speciality-dropdown:hover select, .location-dropdown:hover select {
-      background-color: #367d39;
-    }
+.speciality-dropdown:hover select, .location-dropdown:hover select {
+  background-color: #367d39;
+}
 
-    #allocation-table {
-      margin: 1rem auto;
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 800px;
-    }
+#allocation-table {
+  margin: 1rem auto;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 800px;
+}
 
-    #allocation-table td, #allocation-table th {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
+#allocation-table td, #allocation-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
 
-    #allocation-table tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
+#allocation-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-    #allocation-table th {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: #4b6584;
-      color: white;
-    }
+#allocation-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4b6584;
+  color: white;
+}
 
-    #allocation-table th:hover {
-      background-color: #367d39;
-    }
+#allocation-table th:hover {
+  background-color: #367d39;
+}
 
-    #allocation-table td a {
-      color: #0000ff;
-      text-decoration: underline;
-    }
+#allocation-table td a {
+  color: #0000ff;
+  text-decoration: underline;
+}
 
-    #allocation-table td a:hover {
-      color: #ff0000;
-      text-decoration: none;
-    }
+#allocation-table td a:hover {
+  color: #ff0000;
+  text-decoration: none;
+}
   </style>
 </body>
 </html>
