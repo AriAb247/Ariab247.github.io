@@ -244,6 +244,10 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       }
     }
 
+  document.getElementById('update-button').addEventListener('click', () => {
+  updateTotalScores();
+});
+
     // Group rows by program title and add them to the allocation table
     const groupedData = data.reduce((acc, row) => {
       if (!acc[row.programmeTitle]) {
@@ -266,21 +270,47 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
       </thead>
       <tbody>
     `;
+  
+  function updateTotalScores() {
+  const tableBody = table.getElementsByTagName('tbody')[0];
+  const rows = tableBody.getElementsByTagName('tr');
 
-    for (const programmeTitle in groupedData) {
-      const rows = groupedData[programmeTitle];
-      rows.sort((a, b) => parseInt(a.placementOrder) - parseInt(b.placementOrder));
+  for (const programmeTitle in groupedData) {
+    const programmeRows = groupedData[programmeTitle];
+    let totalScore = 0;
 
-      rows.forEach((row, index) => {
-  const scores = JSON.parse(localStorage.getItem('scores')) || {};
-  const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
-  const specialityScore = parseInt(scores[row.speciality]) || 0;
-  const locationScore = parseInt(locationScores[row.location]) || 0;
-  const specialityWeight = parseFloat(document.getElementById('speciality-weight').value) || 0;
-  const locationWeight = parseFloat(document.getElementById('location-weight').value) || 0;
-  const totalScore = specialityScore * specialityWeight + locationScore * locationWeight;
+    for (let i = 0; i < programmeRows.length; i++) {
+      const row = programmeRows[i];
+      const speciality = row.speciality;
+      const location = row.location;
 
+      const scores = JSON.parse(localStorage.getItem('scores')) || {};
+      const locationScores = JSON.parse(localStorage.getItem('locationScores')) || {};
+      const specialityScore = parseInt(scores[speciality]) || 0;
+      const locationScore = parseInt(locationScores[location]) || 0;
+      const specialityWeight = parseFloat(document.getElementById('speciality-weight').value) || 0;
+      const locationWeight = parseFloat(document.getElementById('location-weight').value) || 0;
+      
+      totalScore += specialityScore * specialityWeight + locationScore * locationWeight;
+    }
 
+    for (let i = 0; i < rows.length; i++) {
+      const tableRow = rows[i];
+      const programmeCell = tableRow.cells[0];
+
+      if (programmeCell.textContent === programmeTitle) {
+        if (tableRow.cells.length === 5) { // Check if the row has a total score cell
+          tableRow.cells[4].textContent = totalScore;
+        } else {
+          const totalScoreCell = document.createElement('td');
+          totalScoreCell.textContent = totalScore;
+          tableRow.appendChild(totalScoreCell);
+        }
+        break;
+      }
+    }
+  }
+}
 
         tableHTML += `
           <tr>
@@ -296,10 +326,14 @@ fetch('https://raw.githubusercontent.com/AriAb247/Ariab247.github.io/main/Alloca
 
     tableHTML += '</tbody>';
     table.innerHTML = tableHTML;
+    
+   
 
     // Initialize the UI
+  
     updateScores();
     updateLocationScores();
+    updateTotalScores();
   });
 
 
